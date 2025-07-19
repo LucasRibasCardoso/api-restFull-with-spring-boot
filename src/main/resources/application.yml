@@ -1,15 +1,14 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/MyAppDB?useTimezone=true&serverTimezone=UTC
-    username: postgres
-    password: 1234
+    url: "${URL_DB}"
+    username: "${USERNAME_DB}"
+    password: "${PASSWORD_DB}"
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: true
     open-in-view: false
-
-logging:
-  level:
-    root: warn
+  flyway:
+    baseline-on-migrate: true
+    baseline-version: 0
