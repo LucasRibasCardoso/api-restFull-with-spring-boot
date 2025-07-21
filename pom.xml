@@ -102,16 +102,6 @@
                     </excludes>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.flywaydb</groupId>
-                <artifactId>flyway-maven-plugin</artifactId>
-                <version>11.10.2</version>
-                <configuration>
-                    <url>jdbc:postgresql://localhost:5432/MyAppDB?useTimezone=true&amp;serverTimezone=UTC</url>
-                    <user>postgres</user>
-                    <password>1234</password>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
