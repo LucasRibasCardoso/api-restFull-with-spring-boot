@@ -19,19 +19,40 @@ public class PersonController {
 
   @Autowired private PersonService service;
 
-  @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+  @GetMapping(
+          value = "/{id}",
+          produces = {
+                  MediaType.APPLICATION_JSON_VALUE,
+                  MediaType.APPLICATION_XML_VALUE,
+                  MediaType.APPLICATION_YAML_VALUE
+          })
   public ResponseEntity<Person> findById(@PathVariable Long id) {
     Person person = service.getById(id);
     return ResponseEntity.ok(person);
   }
 
-  @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+  @GetMapping(
+          produces = {
+                  MediaType.APPLICATION_JSON_VALUE,
+                  MediaType.APPLICATION_XML_VALUE,
+                  MediaType.APPLICATION_YAML_VALUE
+          })
   public ResponseEntity<List<Person>> findAll() {
     List<Person> persons = service.getAll();
     return ResponseEntity.ok(persons);
   }
 
-  @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+  @PostMapping(
+          consumes = {
+                  MediaType.APPLICATION_JSON_VALUE,
+                  MediaType.APPLICATION_XML_VALUE,
+                  MediaType.APPLICATION_YAML_VALUE
+          },
+          produces = {
+                  MediaType.APPLICATION_JSON_VALUE,
+                  MediaType.APPLICATION_XML_VALUE,
+                  MediaType.APPLICATION_YAML_VALUE
+          })
   public ResponseEntity<Person> create(@RequestBody PersonCreateDto personCreateDto) {
     Person createdPerson = service.save(personCreateDto);
 
@@ -42,13 +63,24 @@ public class PersonController {
     return ResponseEntity.created(location).body(createdPerson);
   }
 
-  @PatchMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+  @PatchMapping(
+          value = "/{id}",
+          consumes = {
+                  MediaType.APPLICATION_JSON_VALUE,
+                  MediaType.APPLICATION_XML_VALUE,
+                  MediaType.APPLICATION_YAML_VALUE
+          },
+          produces = {
+                  MediaType.APPLICATION_JSON_VALUE,
+                  MediaType.APPLICATION_XML_VALUE,
+                  MediaType.APPLICATION_YAML_VALUE
+          })
   public ResponseEntity<Person> update(@PathVariable Long id, @RequestBody @Valid PersonUpdateDto personUpdateDto) {
     Person updatedPerson = service.update(id, personUpdateDto);
     return ResponseEntity.ok(updatedPerson);
   }
 
-  @DeleteMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+  @DeleteMapping("/{id}")
   public ResponseEntity<Void> delete(@PathVariable Long id) {
     service.delete(id);
     return ResponseEntity.noContent().build();
