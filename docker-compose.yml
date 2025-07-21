@@ -3,9 +3,11 @@ services:
     image: postgres:latest
     container_name: postgres-db
     restart: always
+    env_file:
+      - .env
     environment:
       POSTGRES_USER: "${USERNAME_DB}"
-      POSTGRES_PASSWORD: "${PASSWORD_DB"
+      POSTGRES_PASSWORD: "${PASSWORD_DB}"
       POSTGRES_DB: "${DATABASE_NAME}"
     ports:
       - "5432:5432"
