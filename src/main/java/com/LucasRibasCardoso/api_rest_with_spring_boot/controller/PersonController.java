@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -18,19 +19,19 @@ public class PersonController {
 
   @Autowired private PersonService service;
 
-  @GetMapping("/{id}")
+  @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
   public ResponseEntity<Person> findById(@PathVariable Long id) {
     Person person = service.getById(id);
     return ResponseEntity.ok(person);
   }
 
-  @GetMapping()
+  @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
   public ResponseEntity<List<Person>> findAll() {
     List<Person> persons = service.getAll();
     return ResponseEntity.ok(persons);
   }
 
-  @PostMapping
+  @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
   public ResponseEntity<Person> create(@RequestBody PersonCreateDto personCreateDto) {
     Person createdPerson = service.save(personCreateDto);
 
@@ -41,13 +42,13 @@ public class PersonController {
     return ResponseEntity.created(location).body(createdPerson);
   }
 
-  @PatchMapping("/{id}")
+  @PatchMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
   public ResponseEntity<Person> update(@PathVariable Long id, @RequestBody @Valid PersonUpdateDto personUpdateDto) {
     Person updatedPerson = service.update(id, personUpdateDto);
     return ResponseEntity.ok(updatedPerson);
   }
 
-  @DeleteMapping("/{id}")
+  @DeleteMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
   public ResponseEntity<Void> delete(@PathVariable Long id) {
     service.delete(id);
     return ResponseEntity.noContent().build();
