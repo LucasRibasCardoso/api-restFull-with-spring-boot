@@ -1,8 +1,8 @@
 package com.LucasRibasCardoso.api_rest_with_spring_boot.controller;
 
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonCreateDto;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonResponseDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonUpdateDto;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Person;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.service.PersonService;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -17,7 +17,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RequestMapping("/api/v1/person")
 public class PersonController {
 
-  @Autowired private PersonService service;
+  @Autowired
+  private PersonService service;
 
   @GetMapping(
           value = "/{id}",
@@ -26,9 +27,8 @@ public class PersonController {
                   MediaType.APPLICATION_XML_VALUE,
                   MediaType.APPLICATION_YAML_VALUE
           })
-  public ResponseEntity<Person> findById(@PathVariable Long id) {
-    Person person = service.getById(id);
-    return ResponseEntity.ok(person);
+  public ResponseEntity<PersonResponseDto> findById(@PathVariable Long id) {
+    return ResponseEntity.ok(service.getById(id));
   }
 
   @GetMapping(
@@ -37,9 +37,8 @@ public class PersonController {
                   MediaType.APPLICATION_XML_VALUE,
                   MediaType.APPLICATION_YAML_VALUE
           })
-  public ResponseEntity<List<Person>> findAll() {
-    List<Person> persons = service.getAll();
-    return ResponseEntity.ok(persons);
+  public ResponseEntity<List<PersonResponseDto>> findAll() {
+    return ResponseEntity.ok(service.getAll());
   }
 
   @PostMapping(
@@ -53,14 +52,13 @@ public class PersonController {
                   MediaType.APPLICATION_XML_VALUE,
                   MediaType.APPLICATION_YAML_VALUE
           })
-  public ResponseEntity<Person> create(@RequestBody PersonCreateDto personCreateDto) {
-    Person createdPerson = service.save(personCreateDto);
-
+  public ResponseEntity<PersonResponseDto> create(@RequestBody PersonCreateDto personCreateDto) {
+    PersonResponseDto dto = service.save(personCreateDto);
     URI location = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
-            .buildAndExpand(createdPerson.getId())
+            .buildAndExpand(dto.getId())
             .toUri();
-    return ResponseEntity.created(location).body(createdPerson);
+    return ResponseEntity.created(location).body(dto);
   }
 
   @PatchMapping(
@@ -75,9 +73,8 @@ public class PersonController {
                   MediaType.APPLICATION_XML_VALUE,
                   MediaType.APPLICATION_YAML_VALUE
           })
-  public ResponseEntity<Person> update(@PathVariable Long id, @RequestBody @Valid PersonUpdateDto personUpdateDto) {
-    Person updatedPerson = service.update(id, personUpdateDto);
-    return ResponseEntity.ok(updatedPerson);
+  public ResponseEntity<PersonResponseDto> update(@PathVariable Long id, @RequestBody @Valid PersonUpdateDto personUpdateDto) {
+    return ResponseEntity.ok(service.update(id, personUpdateDto));
   }
 
   @DeleteMapping("/{id}")
