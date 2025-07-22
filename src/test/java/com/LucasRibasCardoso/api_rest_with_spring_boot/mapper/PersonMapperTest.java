@@ -1,9 +1,8 @@
-package com.LucasRibasCardoso.api_rest_with_spring_boot.unitTests.mapper;
+package com.LucasRibasCardoso.api_rest_with_spring_boot.mapper;
 
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonCreateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonResponseDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonUpdateDto;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.mapper.PersonMapper;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Gender;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Person;
 import org.junit.jupiter.api.BeforeEach;
