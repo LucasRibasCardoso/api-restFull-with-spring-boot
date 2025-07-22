@@ -6,6 +6,7 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonResponse
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonUpdateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.personExceptions.PersonAlreadyExistsException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.personExceptions.PersonNotFoundException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.personExceptions.RequiredObjectIsNullException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.mapper.PersonMapper;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Person;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.repository.PersonRepository;
@@ -59,10 +60,13 @@ public class PersonService {
 
   @Transactional
   public PersonResponseDto save(PersonCreateDto createDto) {
-    logger.info("Saving Person: {}", createDto);
+    if (createDto == null) {
+      throw new RequiredObjectIsNullException();
+    }
 
+    logger.info("Saving Person: {}", createDto);
     if (repository.existsByCpf(createDto.cpf())) {
-      throw new PersonAlreadyExistsException("Person cpf already exists");
+      throw new PersonAlreadyExistsException("This CPF is already in use");
     }
 
     Person personEntity = personMapper.toEntity(createDto);
@@ -74,8 +78,11 @@ public class PersonService {
 
   @Transactional
   public PersonResponseDto update(Long id, PersonUpdateDto updateDto) {
-    logger.info("Updating Person: {}", updateDto);
+    if (updateDto == null) {
+      throw new RequiredObjectIsNullException();
+    }
 
+    logger.info("Updating Person: {}", updateDto);
     Person entity = repository.findById(id)
             .orElseThrow(() -> new PersonNotFoundException("Person not found with id: " + id));
 
