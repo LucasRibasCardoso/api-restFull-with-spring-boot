@@ -30,11 +30,11 @@ public class PersonMapperTest {
     void shouldMapEntityToDto() {
         PersonResponseDto dto = mapper.toDto(samplePerson);
         assertNotNull(dto);
-        assertEquals(samplePerson.getId(), dto.id());
-        assertEquals(samplePerson.getFirstName(), dto.firstName());
-        assertEquals(samplePerson.getLastName(), dto.lastName());
-        assertEquals(samplePerson.getCpf(), dto.cpf());
-        assertEquals(samplePerson.getGender(), dto.gender());
+        assertEquals(samplePerson.getId(), dto.getId());
+        assertEquals(samplePerson.getFirstName(), dto.getFirstName());
+        assertEquals(samplePerson.getLastName(), dto.getLastName());
+        assertEquals(samplePerson.getCpf(), dto.getCpf());
+        assertEquals(samplePerson.getGender(), dto.getGender());
     }
 
     @Test
