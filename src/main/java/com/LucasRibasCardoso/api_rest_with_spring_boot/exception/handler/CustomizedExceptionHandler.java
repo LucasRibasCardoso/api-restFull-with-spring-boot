@@ -5,6 +5,7 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.exceptions.FieldExcep
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.exceptions.ValidationExceptionResponse;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.personExceptions.PersonAlreadyExistsException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.personExceptions.PersonNotFoundException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.personExceptions.RequiredObjectIsNullException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import java.time.Instant;
 import java.util.Arrays;
@@ -122,7 +123,7 @@ public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(defaultResponseException, HttpStatus.NOT_FOUND);
   }
 
-  @ExceptionHandler({PersonAlreadyExistsException.class})
+  @ExceptionHandler({PersonAlreadyExistsException.class, RequiredObjectIsNullException.class})
   public final ResponseEntity<DefaultResponseException> handlerBadRequestException(
       Exception ex, WebRequest request) {
     DefaultResponseException defaultResponseException =
@@ -133,4 +134,5 @@ public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
             request.getDescription(false));
     return new ResponseEntity<>(defaultResponseException, HttpStatus.BAD_REQUEST);
   }
+
 }
