@@ -17,44 +17,44 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RequestMapping("/api/v1/person")
 public class PersonController {
 
-  @Autowired
-  private PersonService service;
+  @Autowired private PersonService service;
 
   @GetMapping(
-          value = "/{id}",
-          produces = {
-                  MediaType.APPLICATION_JSON_VALUE,
-                  MediaType.APPLICATION_XML_VALUE,
-                  MediaType.APPLICATION_YAML_VALUE
-          })
+      value = "/{id}",
+      produces = {
+        MediaType.APPLICATION_JSON_VALUE,
+        MediaType.APPLICATION_XML_VALUE,
+        MediaType.APPLICATION_YAML_VALUE
+      })
   public ResponseEntity<PersonResponseDto> findById(@PathVariable Long id) {
     return ResponseEntity.ok(service.getById(id));
   }
 
   @GetMapping(
-          produces = {
-                  MediaType.APPLICATION_JSON_VALUE,
-                  MediaType.APPLICATION_XML_VALUE,
-                  MediaType.APPLICATION_YAML_VALUE
-          })
+      produces = {
+        MediaType.APPLICATION_JSON_VALUE,
+        MediaType.APPLICATION_XML_VALUE,
+        MediaType.APPLICATION_YAML_VALUE
+      })
   public ResponseEntity<List<PersonResponseDto>> findAll() {
     return ResponseEntity.ok(service.getAll());
   }
 
   @PostMapping(
-          consumes = {
-                  MediaType.APPLICATION_JSON_VALUE,
-                  MediaType.APPLICATION_XML_VALUE,
-                  MediaType.APPLICATION_YAML_VALUE
-          },
-          produces = {
-                  MediaType.APPLICATION_JSON_VALUE,
-                  MediaType.APPLICATION_XML_VALUE,
-                  MediaType.APPLICATION_YAML_VALUE
-          })
+      consumes = {
+        MediaType.APPLICATION_JSON_VALUE,
+        MediaType.APPLICATION_XML_VALUE,
+        MediaType.APPLICATION_YAML_VALUE
+      },
+      produces = {
+        MediaType.APPLICATION_JSON_VALUE,
+        MediaType.APPLICATION_XML_VALUE,
+        MediaType.APPLICATION_YAML_VALUE
+      })
   public ResponseEntity<PersonResponseDto> create(@RequestBody PersonCreateDto personCreateDto) {
     PersonResponseDto dto = service.save(personCreateDto);
-    URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+    URI location =
+        ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
             .buildAndExpand(dto.getId())
             .toUri();
@@ -62,18 +62,19 @@ public class PersonController {
   }
 
   @PatchMapping(
-          value = "/{id}",
-          consumes = {
-                  MediaType.APPLICATION_JSON_VALUE,
-                  MediaType.APPLICATION_XML_VALUE,
-                  MediaType.APPLICATION_YAML_VALUE
-          },
-          produces = {
-                  MediaType.APPLICATION_JSON_VALUE,
-                  MediaType.APPLICATION_XML_VALUE,
-                  MediaType.APPLICATION_YAML_VALUE
-          })
-  public ResponseEntity<PersonResponseDto> update(@PathVariable Long id, @RequestBody @Valid PersonUpdateDto personUpdateDto) {
+      value = "/{id}",
+      consumes = {
+        MediaType.APPLICATION_JSON_VALUE,
+        MediaType.APPLICATION_XML_VALUE,
+        MediaType.APPLICATION_YAML_VALUE
+      },
+      produces = {
+        MediaType.APPLICATION_JSON_VALUE,
+        MediaType.APPLICATION_XML_VALUE,
+        MediaType.APPLICATION_YAML_VALUE
+      })
+  public ResponseEntity<PersonResponseDto> update(
+      @PathVariable Long id, @RequestBody @Valid PersonUpdateDto personUpdateDto) {
     return ResponseEntity.ok(service.update(id, personUpdateDto));
   }
 

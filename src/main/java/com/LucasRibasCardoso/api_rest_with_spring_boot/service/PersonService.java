@@ -36,9 +36,10 @@ public class PersonService {
   public PersonResponseDto getById(Long id) {
     logger.info("Get Person with id: {}", id);
 
-    Person entity = repository
-        .findById(id)
-        .orElseThrow(() -> new PersonNotFoundException("Person not found with id: " + id));
+    Person entity =
+        repository
+            .findById(id)
+            .orElseThrow(() -> new PersonNotFoundException("Person not found with id: " + id));
 
     PersonResponseDto responseDto = personMapper.toDto(entity);
 
@@ -50,9 +51,8 @@ public class PersonService {
   public List<PersonResponseDto> getAll() {
     logger.info("Get all Persons");
 
-    List<PersonResponseDto> persons = repository.findAll().stream()
-        .map(personMapper::toDto)
-        .toList();
+    List<PersonResponseDto> persons =
+        repository.findAll().stream().map(personMapper::toDto).toList();
 
     persons.forEach((this::addHateoasLinks));
     return persons;
@@ -83,7 +83,9 @@ public class PersonService {
     }
 
     logger.info("Updating Person: {}", updateDto);
-    Person entity = repository.findById(id)
+    Person entity =
+        repository
+            .findById(id)
             .orElseThrow(() -> new PersonNotFoundException("Person not found with id: " + id));
 
     personMapper.updateEntityFromDto(updateDto, entity);
@@ -105,11 +107,21 @@ public class PersonService {
   }
 
   private void addHateoasLinks(PersonResponseDto responseDto) {
-    responseDto.add(linkTo(methodOn(PersonController.class).findById(responseDto.getId())).withSelfRel().withType("GET"));
-    responseDto.add(linkTo(methodOn(PersonController.class).findAll()).withRel("findAll").withType("GET"));
-    responseDto.add(linkTo(methodOn(PersonController.class).create(null)).withRel("create").withType("POST"));
-    responseDto.add(linkTo(methodOn(PersonController.class).update(responseDto.getId(), null)).withRel("update").withType("PATCH"));
-    responseDto.add(linkTo(methodOn(PersonController.class).delete(responseDto.getId())).withRel("delete").withType("DELETE"));
-
+    responseDto.add(
+        linkTo(methodOn(PersonController.class).findById(responseDto.getId()))
+            .withSelfRel()
+            .withType("GET"));
+    responseDto.add(
+        linkTo(methodOn(PersonController.class).findAll()).withRel("findAll").withType("GET"));
+    responseDto.add(
+        linkTo(methodOn(PersonController.class).create(null)).withRel("create").withType("POST"));
+    responseDto.add(
+        linkTo(methodOn(PersonController.class).update(responseDto.getId(), null))
+            .withRel("update")
+            .withType("PATCH"));
+    responseDto.add(
+        linkTo(methodOn(PersonController.class).delete(responseDto.getId()))
+            .withRel("delete")
+            .withType("DELETE"));
   }
 }

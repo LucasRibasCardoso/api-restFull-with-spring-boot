@@ -134,5 +134,4 @@ public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
             request.getDescription(false));
     return new ResponseEntity<>(defaultResponseException, HttpStatus.BAD_REQUEST);
   }
-
 }
