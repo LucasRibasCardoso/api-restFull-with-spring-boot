@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +34,8 @@ public class PersonController implements PersonControllerDocs {
       })
   @Override
   public ResponseEntity<PersonResponseDto> findById(@PathVariable Long id) {
-    return ResponseEntity.ok(service.getById(id));
+    PersonResponseDto personResponseDto = service.getById(id);
+    return ResponseEntity.ok(personResponseDto);
   }
 
   @GetMapping(
@@ -46,7 +46,8 @@ public class PersonController implements PersonControllerDocs {
       })
   @Override
   public ResponseEntity<List<PersonResponseDto>> findAll() {
-    return ResponseEntity.ok(service.getAll());
+    List<PersonResponseDto> listOfPersonResponseDto = service.getAll();
+    return ResponseEntity.ok(listOfPersonResponseDto);
   }
 
   @PostMapping(
@@ -61,14 +62,15 @@ public class PersonController implements PersonControllerDocs {
         MediaType.APPLICATION_XML_VALUE
       })
   @Override
-  public ResponseEntity<PersonResponseDto> create(@RequestBody PersonCreateDto personCreateDto) {
-    PersonResponseDto dto = service.save(personCreateDto);
+  public ResponseEntity<PersonResponseDto> save(
+      @RequestBody @Valid PersonCreateDto personCreateDto) {
+    PersonResponseDto savedPersonResponseDto = service.save(personCreateDto);
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
-            .buildAndExpand(dto.getId())
+            .buildAndExpand(savedPersonResponseDto.getId())
             .toUri();
-    return ResponseEntity.created(location).body(dto);
+    return ResponseEntity.created(location).body(savedPersonResponseDto);
   }
 
   @PatchMapping(
@@ -86,7 +88,8 @@ public class PersonController implements PersonControllerDocs {
   @Override
   public ResponseEntity<PersonResponseDto> update(
       @PathVariable Long id, @RequestBody @Valid PersonUpdateDto personUpdateDto) {
-    return ResponseEntity.ok(service.update(id, personUpdateDto));
+    PersonResponseDto updatedPersonResponseDto = service.update(id, personUpdateDto);
+    return ResponseEntity.ok(updatedPersonResponseDto);
   }
 
   @DeleteMapping("/{id}")
