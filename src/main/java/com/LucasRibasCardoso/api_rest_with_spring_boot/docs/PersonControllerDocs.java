@@ -108,7 +108,7 @@ public interface PersonControllerDocs {
   @UnauthorizedApiResponseDoc
   @ValidationExceptionApiResponseDoc
   @InternalServerErrorApiResponseDoc
-  ResponseEntity<PersonResponseDto> create(@RequestBody PersonCreateDto personCreateDto);
+  ResponseEntity<PersonResponseDto> save(@RequestBody PersonCreateDto personCreateDto);
 
   @Operation(
       summary = "Update a person",
