@@ -1,8 +1,8 @@
 ﻿CREATE TABLE tb_books (
   id SERIAL PRIMARY KEY,
-  author TEXT,
-  launch_date TIMESTAMP(6) NOT NULL,
+  author TEXT NOT NULL,
+  launch_date DATE NOT NULL,
   price NUMERIC(65,2) NOT NULL,
-  title TEXT
+  title TEXT NOT NULL
 );
 
