@@ -1,8 +1,12 @@
 package com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person;
 
 import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Gender;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
 
+@Getter
+@Setter
 public class PersonResponseDto extends RepresentationModel<PersonResponseDto> {
   private Long id;
   private String firstName;
@@ -17,46 +21,6 @@ public class PersonResponseDto extends RepresentationModel<PersonResponseDto> {
     this.firstName = firstName;
     this.lastName = lastName;
     this.cpf = cpf;
-    this.gender = gender;
-  }
-
-  public Long getId() {
-    return id;
-  }
-
-  public String getFirstName() {
-    return firstName;
-  }
-
-  public String getLastName() {
-    return lastName;
-  }
-
-  public String getCpf() {
-    return cpf;
-  }
-
-  public Gender getGender() {
-    return gender;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public void setFirstName(String firstName) {
-    this.firstName = firstName;
-  }
-
-  public void setLastName(String lastName) {
-    this.lastName = lastName;
-  }
-
-  public void setCpf(String cpf) {
-    this.cpf = cpf;
-  }
-
-  public void setGender(Gender gender) {
     this.gender = gender;
   }
 }

@@ -6,7 +6,7 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonResponse
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonUpdateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.personExceptions.PersonAlreadyExistsException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.personExceptions.PersonNotFoundException;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.personExceptions.RequiredObjectIsNullException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.RequiredObjectIsNullException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.mapper.PersonMapper;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Person;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.repository.PersonRepository;
@@ -36,15 +36,14 @@ public class PersonService {
   public PersonResponseDto getById(Long id) {
     logger.info("Get Person with id: {}", id);
 
-    Person entity =
+    PersonResponseDto personResponseDto =
         repository
             .findById(id)
+            .map(personMapper::toDto)
             .orElseThrow(() -> new PersonNotFoundException("Person not found with id: " + id));
 
-    PersonResponseDto responseDto = personMapper.toDto(entity);
-
-    addHateoasLinks(responseDto);
-    return responseDto;
+    addHateoasLinks(personResponseDto);
+    return personResponseDto;
   }
 
   @Transactional(readOnly = true)
@@ -64,13 +63,13 @@ public class PersonService {
       throw new RequiredObjectIsNullException();
     }
 
-    logger.info("Saving Person: {}", createDto);
+    logger.info("Saving Person");
     if (repository.existsByCpf(createDto.cpf())) {
       throw new PersonAlreadyExistsException("This CPF is already in use");
     }
 
-    Person personEntity = personMapper.toEntity(createDto);
-    PersonResponseDto personResponse = personMapper.toDto(repository.save(personEntity));
+    Person savedPerson = repository.save(personMapper.toEntity(createDto));
+    PersonResponseDto personResponse = personMapper.toDto(savedPerson);
 
     addHateoasLinks(personResponse);
     return personResponse;
@@ -82,14 +81,14 @@ public class PersonService {
       throw new RequiredObjectIsNullException();
     }
 
-    logger.info("Updating Person: {}", updateDto);
-    Person entity =
+    logger.info("Updating Person");
+    Person personEntity =
         repository
             .findById(id)
             .orElseThrow(() -> new PersonNotFoundException("Person not found with id: " + id));
 
-    personMapper.updateEntityFromDto(updateDto, entity);
-    PersonResponseDto personResponse = personMapper.toDto(repository.save(entity));
+    personMapper.updateEntityFromDto(updateDto, personEntity);
+    PersonResponseDto personResponse = personMapper.toDto(repository.save(personEntity));
 
     addHateoasLinks(personResponse);
     return personResponse;
@@ -98,6 +97,7 @@ public class PersonService {
   @Transactional
   public void delete(Long id) {
     logger.info("Deleting Person with id: {}", id);
+
     Person entity =
         repository
             .findById(id)
@@ -114,7 +114,7 @@ public class PersonService {
     responseDto.add(
         linkTo(methodOn(PersonController.class).findAll()).withRel("findAll").withType("GET"));
     responseDto.add(
-        linkTo(methodOn(PersonController.class).create(null)).withRel("create").withType("POST"));
+        linkTo(methodOn(PersonController.class).save(null)).withRel("create").withType("POST"));
     responseDto.add(
         linkTo(methodOn(PersonController.class).update(responseDto.getId(), null))
             .withRel("update")
