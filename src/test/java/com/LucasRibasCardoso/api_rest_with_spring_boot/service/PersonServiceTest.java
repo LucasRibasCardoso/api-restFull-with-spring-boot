@@ -5,7 +5,7 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonResponse
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonUpdateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.personExceptions.PersonAlreadyExistsException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.personExceptions.PersonNotFoundException;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.personExceptions.RequiredObjectIsNullException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.RequiredObjectIsNullException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.mapper.PersonMapper;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Gender;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Person;
