@@ -1,10 +1,15 @@
 package com.LucasRibasCardoso.api_rest_with_spring_boot.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "TB_PERSON")
 public class Person implements Serializable {
