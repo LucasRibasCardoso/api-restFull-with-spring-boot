@@ -33,7 +33,7 @@ public class PersonService {
   }
 
   @Transactional(readOnly = true)
-  public PersonResponseDto getById(Long id) {
+  public PersonResponseDto findById(Long id) {
     logger.info("Get Person with id: {}", id);
 
     PersonResponseDto personResponseDto =
@@ -47,7 +47,7 @@ public class PersonService {
   }
 
   @Transactional(readOnly = true)
-  public List<PersonResponseDto> getAll() {
+  public List<PersonResponseDto> findAll() {
     logger.info("Get all Persons");
 
     List<PersonResponseDto> persons =
