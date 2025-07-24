@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: "${URL_DB}"
-    username: "${USERNAME_DB}"
-    password: "${PASSWORD_DB}"
+    url: jdbc:postgresql://${DB_HOST}:5432/${POSTGRES_DB}?useTimezone=true&serverTimezone=UTC
+    username: "${POSTGRES_USER}"
+    password: "${POSTGRES_PASSWORD}"
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
