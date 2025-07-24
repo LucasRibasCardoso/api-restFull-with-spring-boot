@@ -34,7 +34,7 @@ public class PersonController implements PersonControllerDocs {
       })
   @Override
   public ResponseEntity<PersonResponseDto> findById(@PathVariable Long id) {
-    PersonResponseDto personResponseDto = service.getById(id);
+    PersonResponseDto personResponseDto = service.findById(id);
     return ResponseEntity.ok(personResponseDto);
   }
 
@@ -46,7 +46,7 @@ public class PersonController implements PersonControllerDocs {
       })
   @Override
   public ResponseEntity<List<PersonResponseDto>> findAll() {
-    List<PersonResponseDto> listOfPersonResponseDto = service.getAll();
+    List<PersonResponseDto> listOfPersonResponseDto = service.findAll();
     return ResponseEntity.ok(listOfPersonResponseDto);
   }
 
