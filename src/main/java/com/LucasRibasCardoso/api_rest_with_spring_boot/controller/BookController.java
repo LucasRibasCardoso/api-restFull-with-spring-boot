@@ -1,5 +1,6 @@
 package com.LucasRibasCardoso.api_rest_with_spring_boot.controller;
 
+import com.LucasRibasCardoso.api_rest_with_spring_boot.docs.BookControllerDocs;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookCreateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookResponseDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookUpdateDto;
@@ -17,7 +18,7 @@ import java.util.List;
 @Tag(name = "Books", description = "Endpoints for managing books")
 @RestController
 @RequestMapping("/api/v1/books")
-public class BookController {
+public class BookController implements BookControllerDocs {
 
   private final BookService bookService;
 
@@ -32,6 +33,7 @@ public class BookController {
         MediaType.APPLICATION_YAML_VALUE,
         MediaType.APPLICATION_XML_VALUE
       })
+  @Override
   public ResponseEntity<BookResponseDto> findById(@PathVariable Long id) {
     BookResponseDto bookResponseDto = bookService.findById(id);
     return ResponseEntity.ok(bookResponseDto);
@@ -43,6 +45,7 @@ public class BookController {
         MediaType.APPLICATION_YAML_VALUE,
         MediaType.APPLICATION_XML_VALUE
       })
+  @Override
   public ResponseEntity<List<BookResponseDto>> findAll() {
     List<BookResponseDto> listOfBookResponse = bookService.findAll();
     return ResponseEntity.ok(listOfBookResponse);
@@ -59,6 +62,7 @@ public class BookController {
         MediaType.APPLICATION_YAML_VALUE,
         MediaType.APPLICATION_XML_VALUE
       })
+  @Override
   public ResponseEntity<BookResponseDto> save(@RequestBody @Valid BookCreateDto bookCreateDto) {
     BookResponseDto savedBookResponseDto = bookService.save(bookCreateDto);
     URI location =
@@ -81,6 +85,7 @@ public class BookController {
         MediaType.APPLICATION_YAML_VALUE,
         MediaType.APPLICATION_XML_VALUE
       })
+  @Override
   public ResponseEntity<BookResponseDto> update(
       @PathVariable Long id, @RequestBody @Valid BookUpdateDto bookUpdateDto) {
     BookResponseDto updatedBookResponseDto = bookService.update(id, bookUpdateDto);
@@ -88,6 +93,7 @@ public class BookController {
   }
 
   @DeleteMapping("/{id}")
+  @Override
   public ResponseEntity<Void> delete(@PathVariable Long id) {
     bookService.delete(id);
     return ResponseEntity.noContent().build();
