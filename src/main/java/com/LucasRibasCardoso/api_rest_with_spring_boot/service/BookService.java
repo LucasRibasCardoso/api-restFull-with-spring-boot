@@ -1,7 +1,6 @@
 package com.LucasRibasCardoso.api_rest_with_spring_boot.service;
 
 import com.LucasRibasCardoso.api_rest_with_spring_boot.controller.BookController;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.controller.PersonController;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookCreateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookResponseDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookUpdateDto;
