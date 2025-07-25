@@ -28,7 +28,7 @@ public class JacksonConfig {
     javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(formatter));
 
     return new Jackson2ObjectMapperBuilder()
-        .modules(javaTimeModule, new StringTrimModule())
+        .modules(javaTimeModule, new StringTrimModuleConfig())
         .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         .simpleDateFormat(DATE_FORMAT);
   }
