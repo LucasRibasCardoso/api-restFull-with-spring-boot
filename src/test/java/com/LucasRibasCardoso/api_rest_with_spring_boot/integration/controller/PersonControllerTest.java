@@ -73,10 +73,10 @@ class PersonControllerTest extends AbstractIntegrationTest {
 
     assertTrue(personResponse.getId() > 0);
 
-    assertEquals(personCreate.firstName(), personResponse.getFirstName());
-    assertEquals(personCreate.lastName(), personResponse.getLastName());
-    assertEquals(personCreate.cpf(), personResponse.getCpf());
-    assertEquals(personCreate.gender(), personResponse.getGender());
+    assertEquals("John", personResponse.getFirstName());
+    assertEquals("Doe", personResponse.getLastName());
+    assertEquals("057.657.780-46", personResponse.getCpf());
+    assertEquals(Gender.M, personResponse.getGender());
   }
 
   @Test
@@ -109,14 +109,69 @@ class PersonControllerTest extends AbstractIntegrationTest {
   }
 
   @Test
-  void findById() {}
+  @Order(3)
+  void findById() throws IOException {
+    specification =
+        new RequestSpecBuilder()
+            .addHeader(TestsConfigs.HEADER_PARAM_ORIGIN, TestsConfigs.ORIGIN_LOCAL)
+            .setBasePath("/api/v1/person")
+            .setPort(TestsConfigs.SERVER_PORT)
+            .addFilter(new RequestLoggingFilter(LogDetail.ALL))
+            .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+            .build();
+
+    var content =
+        given(specification)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .pathParam("id", personResponse.getId())
+            .when()
+            .get("{id}")
+            .then()
+            .statusCode(200)
+            .extract()
+            .body()
+            .asString();
+
+    personResponse = objectMapper.readValue(content, PersonResponseDto.class);
+
+    assertNotNull(personResponse.getId());
+    assertNotNull(personResponse.getFirstName());
+    assertNotNull(personResponse.getLastName());
+    assertNotNull(personResponse.getCpf());
+    assertNotNull(personResponse.getGender());
+
+    assertTrue(personResponse.getId() > 0);
+
+    assertEquals("John", personResponse.getFirstName());
+    assertEquals("Doe", personResponse.getLastName());
+    assertEquals("057.657.780-46", personResponse.getCpf());
+    assertEquals(Gender.M, personResponse.getGender());
+  }
 
   @Test
-  void findAll() {}
+  @Order(3)
+  void findByIdWithWrongOrigin() throws IOException {
+    specification =
+        new RequestSpecBuilder()
+            .addHeader(TestsConfigs.HEADER_PARAM_ORIGIN, TestsConfigs.ORIGIN_INVALID)
+            .setBasePath("/api/v1/person")
+            .setPort(TestsConfigs.SERVER_PORT)
+            .addFilter(new RequestLoggingFilter(LogDetail.ALL))
+            .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+            .build();
 
-  @Test
-  void update() {}
+    var content =
+        given(specification)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .pathParam("id", personResponse.getId())
+            .when()
+            .get("{id}")
+            .then()
+            .statusCode(403)
+            .extract()
+            .body()
+            .asString();
 
-  @Test
-  void delete() {}
+    assertEquals("Invalid CORS request", content);
+  }
 }
