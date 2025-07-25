@@ -80,6 +80,35 @@ class PersonControllerTest extends AbstractIntegrationTest {
   }
 
   @Test
+  @Order(2)
+  void saveWithWrongOrigin() throws IOException {
+    PersonCreateDto personCreate = new PersonCreateDto("John", "Doe", "057.657.780-46", Gender.M);
+
+    specification =
+        new RequestSpecBuilder()
+            .addHeader(TestsConfigs.HEADER_PARAM_ORIGIN, TestsConfigs.ORIGIN_INVALID)
+            .setBasePath("/api/v1/person")
+            .setPort(TestsConfigs.SERVER_PORT)
+            .addFilter(new RequestLoggingFilter(LogDetail.ALL))
+            .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+            .build();
+
+    var content =
+        given(specification)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(personCreate)
+            .when()
+            .post()
+            .then()
+            .statusCode(403)
+            .extract()
+            .body()
+            .asString();
+
+    assertEquals("Invalid CORS request", content);
+  }
+
+  @Test
   void findById() {}
 
   @Test
