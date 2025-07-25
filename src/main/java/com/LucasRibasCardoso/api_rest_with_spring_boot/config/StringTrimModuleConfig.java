@@ -10,9 +10,9 @@ import java.io.IOException;
  * Classe responsável por criar um módulo Jackson que remove espaços em branco no início e no final
  * de strings
  */
-public class StringTrimModule extends SimpleModule {
+public class StringTrimModuleConfig extends SimpleModule {
 
-  public StringTrimModule() {
+  public StringTrimModuleConfig() {
     super("StringTrimModule");
     addDeserializer(
         String.class,
