@@ -1,10 +1,11 @@
-package com.LucasRibasCardoso.api_rest_with_spring_boot.mapper;
+package com.LucasRibasCardoso.api_rest_with_spring_boot.unit.mapper;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookCreateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookResponseDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookUpdateDto;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.mapper.BookMapper;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Book;
 import java.math.BigDecimal;
 import java.time.LocalDate;

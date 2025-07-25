@@ -1,4 +1,4 @@
-package com.LucasRibasCardoso.api_rest_with_spring_boot.service;
+package com.LucasRibasCardoso.api_rest_with_spring_boot.unit.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -12,6 +12,7 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.bookExceptions.
 import com.LucasRibasCardoso.api_rest_with_spring_boot.mapper.BookMapper;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Book;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.repository.BookRepository;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.service.BookService;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
