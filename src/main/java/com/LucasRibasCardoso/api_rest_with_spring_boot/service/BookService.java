@@ -1,24 +1,23 @@
 package com.LucasRibasCardoso.api_rest_with_spring_boot.service;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import com.LucasRibasCardoso.api_rest_with_spring_boot.controller.BookController;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookCreateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookResponseDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookUpdateDto;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.RequiredObjectIsNullException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.bookExceptions.BookAlreadyExistsException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.bookExceptions.BookNotFoundException;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.RequiredObjectIsNullException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.mapper.BookMapper;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Book;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.repository.BookRepository;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 public class BookService {

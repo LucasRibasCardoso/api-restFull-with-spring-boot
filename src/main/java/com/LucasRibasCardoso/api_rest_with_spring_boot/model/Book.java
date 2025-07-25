@@ -1,14 +1,13 @@
 package com.LucasRibasCardoso.api_rest_with_spring_boot.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
+import lombok.Getter;
+import lombok.Setter;
 
 @Setter
 @Getter
@@ -47,7 +46,9 @@ public class Book implements Serializable {
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof Book book)) return false;
-    return Objects.equals(id, book.id) && Objects.equals(author, book.author) && Objects.equals(title, book.title);
+    return Objects.equals(id, book.id)
+        && Objects.equals(author, book.author)
+        && Objects.equals(title, book.title);
   }
 
   @Override

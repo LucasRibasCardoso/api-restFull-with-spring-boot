@@ -1,5 +1,7 @@
 package com.LucasRibasCardoso.api_rest_with_spring_boot.mapper;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonCreateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonResponseDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonUpdateDto;
@@ -8,8 +10,6 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Person;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class PersonMapperTest {
 

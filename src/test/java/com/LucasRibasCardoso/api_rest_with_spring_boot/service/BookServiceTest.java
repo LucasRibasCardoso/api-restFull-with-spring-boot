@@ -12,12 +12,10 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.bookExceptions.
 import com.LucasRibasCardoso.api_rest_with_spring_boot.mapper.BookMapper;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Book;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.repository.BookRepository;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

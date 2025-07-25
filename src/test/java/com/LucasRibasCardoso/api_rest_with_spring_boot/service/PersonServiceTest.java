@@ -1,26 +1,26 @@
 package com.LucasRibasCardoso.api_rest_with_spring_boot.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonCreateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonResponseDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonUpdateDto;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.RequiredObjectIsNullException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.personExceptions.PersonAlreadyExistsException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.personExceptions.PersonNotFoundException;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.RequiredObjectIsNullException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.mapper.PersonMapper;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Gender;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Person;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.repository.PersonRepository;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.List;
-import java.util.Optional;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PersonServiceTest {

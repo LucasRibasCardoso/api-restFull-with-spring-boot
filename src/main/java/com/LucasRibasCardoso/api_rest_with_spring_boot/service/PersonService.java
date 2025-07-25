@@ -1,12 +1,15 @@
 package com.LucasRibasCardoso.api_rest_with_spring_boot.service;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import com.LucasRibasCardoso.api_rest_with_spring_boot.controller.PersonController;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonCreateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonResponseDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonUpdateDto;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.RequiredObjectIsNullException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.personExceptions.PersonAlreadyExistsException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.personExceptions.PersonNotFoundException;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.RequiredObjectIsNullException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.mapper.PersonMapper;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Person;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.repository.PersonRepository;
@@ -15,9 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 public class PersonService {

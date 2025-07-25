@@ -7,13 +7,12 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookUpdateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.service.BookService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.net.URI;
+import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.net.URI;
-import java.util.List;
 
 @Tag(name = "Books", description = "Endpoints for managing books")
 @RestController

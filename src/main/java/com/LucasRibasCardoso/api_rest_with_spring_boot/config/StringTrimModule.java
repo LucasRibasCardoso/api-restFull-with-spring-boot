@@ -2,8 +2,8 @@ package com.LucasRibasCardoso.api_rest_with_spring_boot.config;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import java.io.IOException;
 
 /**

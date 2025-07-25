@@ -6,12 +6,11 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookCreateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookResponseDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookUpdateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Book;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
 
 public class BookMapperTest {
 
@@ -58,12 +57,9 @@ public class BookMapperTest {
 
   @Test
   void shouldUpdateEntityFromDto_AllFields() {
-    updateDto = new BookUpdateDto(
-            "Código Limpo",
-            "Uncle Bob",
-            LocalDate.of(2008, 9, 1),
-            new BigDecimal("50.00")
-        );
+    updateDto =
+        new BookUpdateDto(
+            "Código Limpo", "Uncle Bob", LocalDate.of(2008, 9, 1), new BigDecimal("50.00"));
 
     mapper.updateEntityFromDto(updateDto, sampleBook);
 

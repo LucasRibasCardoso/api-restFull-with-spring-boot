@@ -4,12 +4,11 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.exceptions.DefaultRes
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.springframework.http.MediaType;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.springframework.http.MediaType;
 
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
@@ -29,6 +28,4 @@ import java.lang.annotation.Target;
     })
 public @interface NotFoundApiResponseDoc {}
 
-/**
- * Essa anotação é usada para documentar a resposta de erro 404 (Not Found).
- */
+/** Essa anotação é usada para documentar a resposta de erro 404 (Not Found). */
