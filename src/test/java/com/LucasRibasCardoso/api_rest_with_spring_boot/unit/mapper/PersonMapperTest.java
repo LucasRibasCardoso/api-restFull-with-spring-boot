@@ -17,13 +17,12 @@ public class PersonMapperTest {
   private PersonMapper mapper;
   private Person samplePerson;
   private PersonCreateDto createDto;
-  private PersonUpdateDto updateDto;
 
   @BeforeEach
   void setUp() {
     mapper = Mappers.getMapper(PersonMapper.class);
     samplePerson = new Person(1L, "John", "Doe", "123.456.789-00", Gender.M);
-    createDto = new PersonCreateDto("Jane", "Smith", "987.654.321-00", Gender.F);
+    createDto = new PersonCreateDto("John", "Doe", "123.456.789-00", Gender.M);
   }
 
   @Test
@@ -50,7 +49,8 @@ public class PersonMapperTest {
 
   @Test
   void shouldUpdateEntityFromDto_AllFields() {
-    updateDto = new PersonUpdateDto("Alice", "Wonderland", "111.222.333-44", Gender.F);
+    PersonUpdateDto updateDto =
+        new PersonUpdateDto("Alice", "Wonderland", "111.222.333-44", Gender.F);
     mapper.updateEntityFromDto(updateDto, samplePerson);
     assertEquals("Alice", samplePerson.getFirstName());
     assertEquals("Wonderland", samplePerson.getLastName());
@@ -61,7 +61,7 @@ public class PersonMapperTest {
   @Test
   void shouldUpdateEntityFromDto_PartialFields() {
     // only update lastName and keep others
-    updateDto = new PersonUpdateDto(null, "NewLast", null, null);
+    PersonUpdateDto updateDto = new PersonUpdateDto(null, "NewLast", null, null);
     String originalFirst = samplePerson.getFirstName();
     String originalCpf = samplePerson.getCpf();
     Gender originalGender = samplePerson.getGender();
@@ -76,7 +76,7 @@ public class PersonMapperTest {
 
   @Test
   void shouldNotModifyEntityWhenAllDtoFieldsNull() {
-    updateDto = new PersonUpdateDto(null, null, null, null);
+    PersonUpdateDto updateDto = new PersonUpdateDto(null, null, null, null);
     String originalFirst = samplePerson.getFirstName();
     String originalLast = samplePerson.getLastName();
     String originalCpf = samplePerson.getCpf();

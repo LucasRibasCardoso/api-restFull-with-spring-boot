@@ -8,7 +8,9 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.integration.config.TestsC
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
+    properties = {"server.port=8888"})
 public class SwaggerIntegrationTest extends AbstractIntegrationTest {
 
   /**
@@ -18,8 +20,8 @@ public class SwaggerIntegrationTest extends AbstractIntegrationTest {
   void shouldDisplaySwaggerUIPage() {
     var content =
         given()
-            .basePath("/swagger-ui/index.html")
             .port(TestsConfigs.SERVER_PORT)
+            .basePath("/swagger-ui/index.html")
             .when()
             .get()
             .then()
