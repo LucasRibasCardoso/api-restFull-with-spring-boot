@@ -31,6 +31,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      # Passo 4: Rodar Build e Testes com Maven
+      # Passo 4: Check code style
+      - name: Check code style
+        run: mvn spotless:check
+  
+      # Passo 5: Rodar Build e Testes com Maven
       - name: Build and run tests with Maven
         run: mvn -B clean install --file pom.xml
