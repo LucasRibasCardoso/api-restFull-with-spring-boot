@@ -39,7 +39,8 @@ class PersonServiceTest {
   @BeforeEach
   void setUp() {
     personEntity = new Person(1L, "John", "Doe", "123.456.789-00", Gender.M, Boolean.TRUE);
-    personResponseDto = new PersonResponseDto(1L, "John", "Doe", "123.456.789-00", Gender.M, Boolean.TRUE);
+    personResponseDto =
+        new PersonResponseDto(1L, "John", "Doe", "123.456.789-00", Gender.M, Boolean.TRUE);
     personCreateDto = new PersonCreateDto("John", "Doe", "123.456.789-00", Gender.M);
   }
 
@@ -371,8 +372,10 @@ class PersonServiceTest {
   @Test
   void disablePerson() {
     // Arrange
-    Person disabledPerson = new Person(1L, "John", "Doe", "123.456.789-00", Gender.M, Boolean.FALSE);
-    PersonResponseDto disabledPersonResponse = new PersonResponseDto(1L, "John", "Doe", "123.456.789-00", Gender.M, Boolean.FALSE);
+    Person disabledPerson =
+        new Person(1L, "John", "Doe", "123.456.789-00", Gender.M, Boolean.FALSE);
+    PersonResponseDto disabledPersonResponse =
+        new PersonResponseDto(1L, "John", "Doe", "123.456.789-00", Gender.M, Boolean.FALSE);
     when(repository.findById(1L)).thenReturn(Optional.of(personEntity));
     doNothing().when(repository).disablePerson(1L);
     when(repository.findById(1L)).thenReturn(Optional.of(disabledPerson));
@@ -412,7 +415,8 @@ class PersonServiceTest {
   void enablePerson() {
     // Arrange
     Person enabledPerson = new Person(1L, "John", "Doe", "123.456.789-00", Gender.M, Boolean.TRUE);
-    PersonResponseDto enabledPersonResponse = new PersonResponseDto(1L, "John", "Doe", "123.456.789-00", Gender.M, Boolean.TRUE);
+    PersonResponseDto enabledPersonResponse =
+        new PersonResponseDto(1L, "John", "Doe", "123.456.789-00", Gender.M, Boolean.TRUE);
     when(repository.findById(1L)).thenReturn(Optional.of(personEntity));
     doNothing().when(repository).enablePerson(1L);
     when(repository.findById(1L)).thenReturn(Optional.of(enabledPerson));

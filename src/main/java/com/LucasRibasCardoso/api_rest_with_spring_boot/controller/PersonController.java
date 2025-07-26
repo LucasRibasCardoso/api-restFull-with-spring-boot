@@ -92,7 +92,7 @@ public class PersonController implements PersonControllerDocs {
     return ResponseEntity.ok(updatedPersonResponseDto);
   }
 
-  @DeleteMapping("/delete/{id}")
+  @DeleteMapping("/{id}")
   @Override
   public ResponseEntity<Void> delete(@PathVariable Long id) {
     service.delete(id);

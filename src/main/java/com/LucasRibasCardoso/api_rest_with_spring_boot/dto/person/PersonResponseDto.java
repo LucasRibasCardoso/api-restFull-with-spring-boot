@@ -26,5 +26,4 @@ public class PersonResponseDto extends RepresentationModel<PersonResponseDto> {
     this.gender = gender;
     this.enabled = enabled;
   }
-
 }

@@ -167,20 +167,20 @@ public interface PersonControllerDocs {
       description = "Enable a specific person by id",
       tags = {"People"},
       responses = {
-          @ApiResponse(
-              responseCode = "200",
-              description = "Success",
-              content = {
-                  @Content(
-                      mediaType = MediaType.APPLICATION_JSON_VALUE,
-                      schema = @Schema(implementation = PersonResponseDto.class)),
-                  @Content(
-                      mediaType = MediaType.APPLICATION_YAML_VALUE,
-                      schema = @Schema(implementation = PersonResponseDto.class)),
-                  @Content(
-                      mediaType = MediaType.APPLICATION_XML_VALUE,
-                      schema = @Schema(implementation = PersonResponseDto.class))
-              })
+        @ApiResponse(
+            responseCode = "200",
+            description = "Success",
+            content = {
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = PersonResponseDto.class)),
+              @Content(
+                  mediaType = MediaType.APPLICATION_YAML_VALUE,
+                  schema = @Schema(implementation = PersonResponseDto.class)),
+              @Content(
+                  mediaType = MediaType.APPLICATION_XML_VALUE,
+                  schema = @Schema(implementation = PersonResponseDto.class))
+            })
       })
   @UnauthorizedApiResponseDoc
   @NotFoundApiResponseDoc
