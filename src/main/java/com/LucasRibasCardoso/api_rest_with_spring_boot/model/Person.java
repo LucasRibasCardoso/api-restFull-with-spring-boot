@@ -32,14 +32,19 @@ public class Person implements Serializable {
   @Enumerated(EnumType.STRING)
   private Gender gender;
 
+  @Column(nullable = false)
+  private Boolean enabled;
+
   public Person() {}
 
-  public Person(Long id, String firstName, String lastName, String cpf, Gender gender) {
+  public Person(
+      Long id, String firstName, String lastName, String cpf, Gender gender, Boolean enabled) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
     this.cpf = cpf;
     this.gender = gender;
+    this.enabled = enabled;
   }
 
   public Long getId() {
@@ -62,6 +67,10 @@ public class Person implements Serializable {
     return gender;
   }
 
+  public Boolean isEnabled() {
+    return enabled;
+  }
+
   public void setFirstName(String firstName) {
     this.firstName = firstName;
   }
@@ -76,6 +85,10 @@ public class Person implements Serializable {
 
   public void setGender(Gender gender) {
     this.gender = gender;
+  }
+
+  public void setEnabled(Boolean enabled) {
+    this.enabled = enabled;
   }
 
   @Override

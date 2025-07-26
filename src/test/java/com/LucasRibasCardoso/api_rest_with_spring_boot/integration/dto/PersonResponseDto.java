@@ -12,14 +12,17 @@ public class PersonResponseDto {
   private String lastName;
   private String cpf;
   private Gender gender;
+  private Boolean enabled;
 
   public PersonResponseDto() {}
 
-  public PersonResponseDto(Long id, String firstName, String lastName, String cpf, Gender gender) {
+  public PersonResponseDto(
+      Long id, String firstName, String lastName, String cpf, Gender gender, Boolean enabled) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
     this.cpf = cpf;
     this.gender = gender;
+    this.enabled = enabled;
   }
 }

@@ -136,4 +136,54 @@ public interface PersonControllerDocs {
   @InternalServerErrorApiResponseDoc
   ResponseEntity<PersonResponseDto> update(
       @PathVariable Long id, @RequestBody @Valid PersonUpdateDto personUpdateDto);
+
+  @Operation(
+      summary = "Disable a person",
+      description = "Disable a specific person by id",
+      tags = {"People"},
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Success",
+            content = {
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = PersonResponseDto.class)),
+              @Content(
+                  mediaType = MediaType.APPLICATION_YAML_VALUE,
+                  schema = @Schema(implementation = PersonResponseDto.class)),
+              @Content(
+                  mediaType = MediaType.APPLICATION_XML_VALUE,
+                  schema = @Schema(implementation = PersonResponseDto.class))
+            })
+      })
+  @UnauthorizedApiResponseDoc
+  @NotFoundApiResponseDoc
+  @InternalServerErrorApiResponseDoc
+  ResponseEntity<PersonResponseDto> disablePerson(@PathVariable Long id);
+
+  @Operation(
+      summary = "Enable a person",
+      description = "Enable a specific person by id",
+      tags = {"People"},
+      responses = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "Success",
+              content = {
+                  @Content(
+                      mediaType = MediaType.APPLICATION_JSON_VALUE,
+                      schema = @Schema(implementation = PersonResponseDto.class)),
+                  @Content(
+                      mediaType = MediaType.APPLICATION_YAML_VALUE,
+                      schema = @Schema(implementation = PersonResponseDto.class)),
+                  @Content(
+                      mediaType = MediaType.APPLICATION_XML_VALUE,
+                      schema = @Schema(implementation = PersonResponseDto.class))
+              })
+      })
+  @UnauthorizedApiResponseDoc
+  @NotFoundApiResponseDoc
+  @InternalServerErrorApiResponseDoc
+  ResponseEntity<PersonResponseDto> enablePerson(@PathVariable Long id);
 }

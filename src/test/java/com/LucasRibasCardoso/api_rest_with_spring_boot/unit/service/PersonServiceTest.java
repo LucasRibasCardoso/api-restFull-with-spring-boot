@@ -38,8 +38,8 @@ class PersonServiceTest {
 
   @BeforeEach
   void setUp() {
-    personEntity = new Person(1L, "John", "Doe", "123.456.789-00", Gender.M);
-    personResponseDto = new PersonResponseDto(1L, "John", "Doe", "123.456.789-00", Gender.M);
+    personEntity = new Person(1L, "John", "Doe", "123.456.789-00", Gender.M, Boolean.TRUE);
+    personResponseDto = new PersonResponseDto(1L, "John", "Doe", "123.456.789-00", Gender.M, Boolean.TRUE);
     personCreateDto = new PersonCreateDto("John", "Doe", "123.456.789-00", Gender.M);
   }
 
@@ -360,6 +360,86 @@ class PersonServiceTest {
             PersonNotFoundException.class,
             () -> {
               service.delete(1L);
+            });
+
+    String expectedMessage = "Person not found with id: 1";
+    String actualMessage = exception.getMessage();
+
+    assertTrue(actualMessage.contains(expectedMessage));
+  }
+
+  @Test
+  void disablePerson() {
+    // Arrange
+    Person disabledPerson = new Person(1L, "John", "Doe", "123.456.789-00", Gender.M, Boolean.FALSE);
+    PersonResponseDto disabledPersonResponse = new PersonResponseDto(1L, "John", "Doe", "123.456.789-00", Gender.M, Boolean.FALSE);
+    when(repository.findById(1L)).thenReturn(Optional.of(personEntity));
+    doNothing().when(repository).disablePerson(1L);
+    when(repository.findById(1L)).thenReturn(Optional.of(disabledPerson));
+    when(personMapper.toDto(disabledPerson)).thenReturn(disabledPersonResponse);
+
+    PersonResponseDto result = service.disablePerson(1L);
+
+    // Assert
+    assertNotNull(result);
+    assertEquals(1L, result.getId());
+    assertFalse(result.getEnabled());
+    verify(repository, times(2)).findById(1L);
+    verify(repository, times(1)).disablePerson(1L);
+    verify(personMapper, times(1)).toDto(disabledPerson);
+  }
+
+  @Test
+  void disablePersonNotFound() {
+    // Arrange
+    when(repository.findById(1L)).thenReturn(Optional.empty());
+
+    // Act & Assert
+    Exception exception =
+        assertThrows(
+            PersonNotFoundException.class,
+            () -> {
+              service.disablePerson(1L);
+            });
+
+    String expectedMessage = "Person not found with id: 1";
+    String actualMessage = exception.getMessage();
+
+    assertTrue(actualMessage.contains(expectedMessage));
+  }
+
+  @Test
+  void enablePerson() {
+    // Arrange
+    Person enabledPerson = new Person(1L, "John", "Doe", "123.456.789-00", Gender.M, Boolean.TRUE);
+    PersonResponseDto enabledPersonResponse = new PersonResponseDto(1L, "John", "Doe", "123.456.789-00", Gender.M, Boolean.TRUE);
+    when(repository.findById(1L)).thenReturn(Optional.of(personEntity));
+    doNothing().when(repository).enablePerson(1L);
+    when(repository.findById(1L)).thenReturn(Optional.of(enabledPerson));
+    when(personMapper.toDto(enabledPerson)).thenReturn(enabledPersonResponse);
+
+    PersonResponseDto result = service.enablePerson(1L);
+
+    // Assert
+    assertNotNull(result);
+    assertEquals(1L, result.getId());
+    assertTrue(result.getEnabled());
+    verify(repository, times(2)).findById(1L);
+    verify(repository, times(1)).enablePerson(1L);
+    verify(personMapper, times(1)).toDto(enabledPerson);
+  }
+
+  @Test
+  void enablePersonNotFound() {
+    // Arrange
+    when(repository.findById(1L)).thenReturn(Optional.empty());
+
+    // Act & Assert
+    Exception exception =
+        assertThrows(
+            PersonNotFoundException.class,
+            () -> {
+              service.enablePerson(1L);
             });
 
     String expectedMessage = "Person not found with id: 1";

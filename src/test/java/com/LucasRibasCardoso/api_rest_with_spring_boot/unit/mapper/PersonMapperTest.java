@@ -21,7 +21,7 @@ public class PersonMapperTest {
   @BeforeEach
   void setUp() {
     mapper = Mappers.getMapper(PersonMapper.class);
-    samplePerson = new Person(1L, "John", "Doe", "123.456.789-00", Gender.M);
+    samplePerson = new Person(1L, "John", "Doe", "123.456.789-00", Gender.M, Boolean.TRUE);
     createDto = new PersonCreateDto("John", "Doe", "123.456.789-00", Gender.M);
   }
 

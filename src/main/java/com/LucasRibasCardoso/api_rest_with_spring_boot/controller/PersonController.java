@@ -92,10 +92,24 @@ public class PersonController implements PersonControllerDocs {
     return ResponseEntity.ok(updatedPersonResponseDto);
   }
 
-  @DeleteMapping("/{id}")
+  @DeleteMapping("/delete/{id}")
   @Override
   public ResponseEntity<Void> delete(@PathVariable Long id) {
     service.delete(id);
     return ResponseEntity.noContent().build();
+  }
+
+  @PatchMapping("/disable/{id}")
+  @Override
+  public ResponseEntity<PersonResponseDto> disablePerson(@PathVariable Long id) {
+    PersonResponseDto disabledPersonResponseDto = service.disablePerson(id);
+    return ResponseEntity.ok(disabledPersonResponseDto);
+  }
+
+  @PatchMapping("/enable/{id}")
+  @Override
+  public ResponseEntity<PersonResponseDto> enablePerson(@PathVariable Long id) {
+    PersonResponseDto enabledPersonResponseDto = service.enablePerson(id);
+    return ResponseEntity.ok(enabledPersonResponseDto);
   }
 }

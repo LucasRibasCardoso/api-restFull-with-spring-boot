@@ -106,6 +106,39 @@ public class PersonService {
     repository.delete(entity);
   }
 
+  @Transactional
+  public PersonResponseDto disablePerson(Long id) {
+    logger.info("Disabling Person with id: {}", id);
+
+    repository
+        .findById(id)
+        .orElseThrow(() -> new PersonNotFoundException("Person not found with id: " + id));
+
+    repository.disablePerson(id);
+
+    Person personEntity = repository.findById(id).get();
+
+    PersonResponseDto personResponse = personMapper.toDto(personEntity);
+    addHateoasLinks(personResponse);
+    return personResponse;
+  }
+
+  @Transactional
+  public PersonResponseDto enablePerson(Long id) {
+    logger.info("Enabling Person with id: {}", id);
+
+    repository
+        .findById(id)
+        .orElseThrow(() -> new PersonNotFoundException("Person not found with id: " + id));
+
+    repository.enablePerson(id);
+    Person personEntity = repository.findById(id).get();
+
+    PersonResponseDto personResponse = personMapper.toDto(personEntity);
+    addHateoasLinks(personResponse);
+    return personResponse;
+  }
+
   private void addHateoasLinks(PersonResponseDto responseDto) {
     responseDto.add(
         linkTo(methodOn(PersonController.class).findById(responseDto.getId()))
@@ -118,6 +151,14 @@ public class PersonService {
     responseDto.add(
         linkTo(methodOn(PersonController.class).update(responseDto.getId(), null))
             .withRel("update")
+            .withType("PATCH"));
+    responseDto.add(
+        linkTo(methodOn(PersonController.class).disablePerson(responseDto.getId()))
+            .withRel("disable")
+            .withType("PATCH"));
+    responseDto.add(
+        linkTo(methodOn(PersonController.class).enablePerson(responseDto.getId()))
+            .withRel("enable")
             .withType("PATCH"));
     responseDto.add(
         linkTo(methodOn(PersonController.class).delete(responseDto.getId()))

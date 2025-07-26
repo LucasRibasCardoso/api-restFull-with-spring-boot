@@ -14,6 +14,7 @@ public interface PersonMapper {
   PersonResponseDto toDto(Person entity);
 
   @Mapping(target = "id", ignore = true)
+  @Mapping(target = "enabled", constant = "true")
   Person toEntity(PersonCreateDto dto);
 
   void updateEntityFromDto(PersonUpdateDto dto, @MappingTarget Person entity);
