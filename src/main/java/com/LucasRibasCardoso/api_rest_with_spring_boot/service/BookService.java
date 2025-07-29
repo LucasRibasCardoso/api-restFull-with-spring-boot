@@ -13,9 +13,10 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.bookExceptions.
 import com.LucasRibasCardoso.api_rest_with_spring_boot.mapper.BookMapper;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Book;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.repository.BookRepository;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,14 +48,17 @@ public class BookService {
   }
 
   @Transactional(readOnly = true)
-  public List<BookResponseDto> findAll() {
+  public Page<BookResponseDto> findAll(Pageable pageable) {
     logger.info("Get all Books");
 
-    List<BookResponseDto> listOfResponseBookDto =
-        bookRepository.findAll().stream().map(bookMapper::toDto).toList();
-
-    listOfResponseBookDto.forEach(this::addHateoasLinks);
-    return listOfResponseBookDto;
+    return bookRepository
+        .findAll(pageable)
+        .map(
+            book -> {
+              var bookResponseDto = bookMapper.toDto(book);
+              addHateoasLinks(bookResponseDto);
+              return bookResponseDto;
+            });
   }
 
   @Transactional
@@ -116,8 +120,6 @@ public class BookService {
         linkTo(methodOn(BookController.class).findById(responseDto.getId()))
             .withSelfRel()
             .withType("GET"));
-    responseDto.add(
-        linkTo(methodOn(BookController.class).findAll()).withRel("findAll").withType("GET"));
     responseDto.add(
         linkTo(methodOn(BookController.class).save(null)).withRel("create").withType("POST"));
     responseDto.add(

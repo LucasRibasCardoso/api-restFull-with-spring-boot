@@ -10,11 +10,14 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
-import java.util.List;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 public interface BookControllerDocs {
 
@@ -66,7 +69,12 @@ public interface BookControllerDocs {
   @BadRequestApiResponseDoc
   @UnauthorizedApiResponseDoc
   @InternalServerErrorApiResponseDoc
-  ResponseEntity<List<BookResponseDto>> findAll();
+  ResponseEntity<PagedModel<EntityModel<BookResponseDto>>> findAll(
+      @RequestParam(value = "page", defaultValue = "0") Integer page,
+      @RequestParam(value = "size", defaultValue = "10") Integer size,
+      @RequestParam(value = "direction", defaultValue = "desc") String direction,
+      @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
+      PagedResourcesAssembler<BookResponseDto> assembler);
 
   @Operation(
       summary = "Delete a book",

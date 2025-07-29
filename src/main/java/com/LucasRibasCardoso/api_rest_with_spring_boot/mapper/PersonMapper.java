@@ -11,6 +11,7 @@ import org.mapstruct.*;
     nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface PersonMapper {
 
+  @Mapping(source = "enabled", target = "enabled")
   PersonResponseDto toDto(Person entity);
 
   @Mapping(target = "id", ignore = true)

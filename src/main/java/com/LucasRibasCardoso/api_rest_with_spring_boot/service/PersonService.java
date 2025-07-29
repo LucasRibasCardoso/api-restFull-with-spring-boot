@@ -13,9 +13,10 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.personException
 import com.LucasRibasCardoso.api_rest_with_spring_boot.mapper.PersonMapper;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Person;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.repository.PersonRepository;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,15 +47,32 @@ public class PersonService {
     return personResponseDto;
   }
 
+  @Transactional
+  public Page<PersonResponseDto> findByName(String firstName, Pageable pageable) {
+    logger.info("Get Persons with firstName: {}", firstName);
+
+    return repository
+        .findByFirstNameContainingIgnoreCase(firstName, pageable)
+        .map(
+            person -> {
+              PersonResponseDto personResponseDto = personMapper.toDto(person);
+              addHateoasLinks(personResponseDto);
+              return personResponseDto;
+            });
+  }
+
   @Transactional(readOnly = true)
-  public List<PersonResponseDto> findAll() {
-    logger.info("Get all Persons");
+  public Page<PersonResponseDto> findAll(Pageable pageable) {
+    logger.info("Get all person");
 
-    List<PersonResponseDto> persons =
-        repository.findAll().stream().map(personMapper::toDto).toList();
-
-    persons.forEach((this::addHateoasLinks));
-    return persons;
+    return repository
+        .findAll(pageable)
+        .map(
+            person -> {
+              PersonResponseDto dto = personMapper.toDto(person);
+              addHateoasLinks(dto);
+              return dto;
+            });
   }
 
   @Transactional
@@ -144,8 +162,6 @@ public class PersonService {
         linkTo(methodOn(PersonController.class).findById(responseDto.getId()))
             .withSelfRel()
             .withType("GET"));
-    responseDto.add(
-        linkTo(methodOn(PersonController.class).findAll()).withRel("findAll").withType("GET"));
     responseDto.add(
         linkTo(methodOn(PersonController.class).save(null)).withRel("create").withType("POST"));
     responseDto.add(

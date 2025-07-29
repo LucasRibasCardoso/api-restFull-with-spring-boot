@@ -1,6 +1,8 @@
 package com.LucasRibasCardoso.api_rest_with_spring_boot.repository;
 
 import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Person;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,4 +20,7 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
   @Modifying(clearAutomatically = true)
   @Query("UPDATE Person p SET p.enabled = true WHERE p.id = :id")
   void enablePerson(@Param("id") Long id);
+
+  Page<Person> findByFirstNameContainingIgnoreCase(
+      @Param("firstName") String firstName, Pageable pageable);
 }

@@ -1,16 +1,13 @@
-package com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book;
+package com.LucasRibasCardoso.api_rest_with_spring_boot.integration.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.hateoas.RepresentationModel;
-import org.springframework.hateoas.server.core.Relation;
 
 @Setter
 @Getter
-@Relation(collectionRelation = "books")
-public class BookResponseDto extends RepresentationModel<BookResponseDto> {
+public class BookResponseDto {
 
   private Long id;
   private String title;

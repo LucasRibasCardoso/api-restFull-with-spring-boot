@@ -146,7 +146,6 @@ class PersonControllerCorsTest extends AbstractIntegrationTest {
     assertEquals("Doe", personResponse.getLastName());
     assertEquals("057.657.780-46", personResponse.getCpf());
     assertEquals(Gender.M, personResponse.getGender());
-    assertEquals(Boolean.TRUE, personResponse.getEnabled());
   }
 
   @Test

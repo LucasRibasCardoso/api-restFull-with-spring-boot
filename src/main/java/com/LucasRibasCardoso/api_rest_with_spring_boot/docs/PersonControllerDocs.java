@@ -15,7 +15,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
-import java.util.List;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -59,7 +61,7 @@ public interface PersonControllerDocs {
 
   @Operation(
       summary = "Find all people",
-      description = "Returns a list of all people",
+      description = "Returns a list of all person",
       tags = {"People"},
       responses = {
         @ApiResponse(
@@ -80,7 +82,43 @@ public interface PersonControllerDocs {
   @BadRequestApiResponseDoc
   @UnauthorizedApiResponseDoc
   @InternalServerErrorApiResponseDoc
-  ResponseEntity<List<PersonResponseDto>> findAll();
+  ResponseEntity<PagedModel<EntityModel<PersonResponseDto>>> findAll(
+      @RequestParam(value = "page", defaultValue = "0") Integer page,
+      @RequestParam(value = "size", defaultValue = "10") Integer size,
+      @RequestParam(value = "direction", defaultValue = "ASC") String direction,
+      @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
+      PagedResourcesAssembler<PersonResponseDto> assembler);
+
+  @Operation(
+      summary = "Find people filtered by first name",
+      description = "Returns a list of all people",
+      tags = {"People"},
+      responses = {
+        @ApiResponse(
+            description = "Returned list of person filtered by first name",
+            responseCode = "200",
+            content = {
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  array = @ArraySchema(schema = @Schema(implementation = PersonResponseDto.class))),
+              @Content(
+                  mediaType = MediaType.APPLICATION_YAML_VALUE,
+                  array = @ArraySchema(schema = @Schema(implementation = PersonResponseDto.class))),
+              @Content(
+                  mediaType = MediaType.APPLICATION_XML_VALUE,
+                  array = @ArraySchema(schema = @Schema(implementation = PersonResponseDto.class)))
+            }),
+      })
+  @BadRequestApiResponseDoc
+  @UnauthorizedApiResponseDoc
+  @InternalServerErrorApiResponseDoc
+  ResponseEntity<PagedModel<EntityModel<PersonResponseDto>>> findByName(
+      @PathVariable String firstName,
+      @RequestParam(value = "page", defaultValue = "0") Integer page,
+      @RequestParam(value = "size", defaultValue = "10") Integer size,
+      @RequestParam(value = "direction", defaultValue = "ASC") String direction,
+      @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
+      PagedResourcesAssembler<PersonResponseDto> assembler);
 
   @Operation(
       summary = "Create a person",

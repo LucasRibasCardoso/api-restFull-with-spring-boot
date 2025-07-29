@@ -4,11 +4,7 @@ import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
-import lombok.Getter;
-import lombok.Setter;
 
-@Setter
-@Getter
 @Entity
 @Table(name = "TB_PERSON")
 public class Person implements Serializable {
@@ -51,40 +47,44 @@ public class Person implements Serializable {
     return id;
   }
 
+  public void setId(Long id) {
+    this.id = id;
+  }
+
   public String getFirstName() {
     return firstName;
-  }
-
-  public String getLastName() {
-    return lastName;
-  }
-
-  public String getCpf() {
-    return cpf;
-  }
-
-  public Gender getGender() {
-    return gender;
-  }
-
-  public Boolean isEnabled() {
-    return enabled;
   }
 
   public void setFirstName(String firstName) {
     this.firstName = firstName;
   }
 
+  public String getLastName() {
+    return lastName;
+  }
+
   public void setLastName(String lastName) {
     this.lastName = lastName;
+  }
+
+  public String getCpf() {
+    return cpf;
   }
 
   public void setCpf(String cpf) {
     this.cpf = cpf;
   }
 
+  public Gender getGender() {
+    return gender;
+  }
+
   public void setGender(Gender gender) {
     this.gender = gender;
+  }
+
+  public Boolean getEnabled() {
+    return enabled;
   }
 
   public void setEnabled(Boolean enabled) {

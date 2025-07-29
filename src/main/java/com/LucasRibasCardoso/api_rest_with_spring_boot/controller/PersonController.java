@@ -8,7 +8,13 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.service.PersonService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.net.URI;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,9 +51,45 @@ public class PersonController implements PersonControllerDocs {
         MediaType.APPLICATION_XML_VALUE
       })
   @Override
-  public ResponseEntity<List<PersonResponseDto>> findAll() {
-    List<PersonResponseDto> listOfPersonResponseDto = service.findAll();
-    return ResponseEntity.ok(listOfPersonResponseDto);
+  public ResponseEntity<PagedModel<EntityModel<PersonResponseDto>>> findAll(
+      @RequestParam(value = "page", defaultValue = "1") Integer page,
+      @RequestParam(value = "size", defaultValue = "10") Integer size,
+      @RequestParam(value = "direction", defaultValue = "desc") String direction,
+      @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
+      PagedResourcesAssembler<PersonResponseDto> assembler) {
+
+    Sort.Direction sortDirection =
+        "desc".equalsIgnoreCase(direction) ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+    Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+    Page<PersonResponseDto> personPage = service.findAll(pageable);
+
+    return ResponseEntity.ok(assembler.toModel(personPage));
+  }
+
+  @GetMapping(
+      value = "/findByName/{firstName}",
+      produces = {
+        MediaType.APPLICATION_JSON_VALUE,
+        MediaType.APPLICATION_YAML_VALUE,
+        MediaType.APPLICATION_XML_VALUE
+      })
+  @Override
+  public ResponseEntity<PagedModel<EntityModel<PersonResponseDto>>> findByName(
+      @PathVariable("firstName") String firstName,
+      @RequestParam(value = "page", defaultValue = "0") Integer page,
+      @RequestParam(value = "size", defaultValue = "10") Integer size,
+      @RequestParam(value = "direction", defaultValue = "desc") String direction,
+      @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
+      PagedResourcesAssembler<PersonResponseDto> assembler) {
+
+    Sort.Direction sortDirection =
+        "desc".equalsIgnoreCase(direction) ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+    Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+    Page<PersonResponseDto> personPage = service.findByName(firstName, pageable);
+
+    return ResponseEntity.ok(assembler.toModel(personPage));
   }
 
   @PostMapping(
