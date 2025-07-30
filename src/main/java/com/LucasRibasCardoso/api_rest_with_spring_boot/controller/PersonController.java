@@ -5,7 +5,6 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonCreateDt
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonResponseDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonUpdateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.service.PersonService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.net.URI;
 import org.springframework.data.domain.Page;
@@ -20,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-@Tag(name = "People", description = "Endpoints for managing people")
 @RestController
 @RequestMapping("/api/v1/person")
 public class PersonController implements PersonControllerDocs {

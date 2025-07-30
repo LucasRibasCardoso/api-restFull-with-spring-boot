@@ -6,6 +6,8 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.exceptions.Validation
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.RequiredObjectIsNullException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.bookExceptions.BookAlreadyExistsException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.bookExceptions.BookNotFoundException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.filesExceptions.FileNotFoundException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.filesExceptions.FileStorageException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.personExceptions.PersonAlreadyExistsException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.personExceptions.PersonNotFoundException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -33,6 +35,18 @@ public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(Exception.class)
   public final ResponseEntity<DefaultResponseException> handleAllExceptions(
       Exception ex, WebRequest request) {
+    DefaultResponseException defaultResponseException =
+        new DefaultResponseException(
+            Instant.now(),
+            HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            ex.getMessage(),
+            request.getDescription(false));
+    return new ResponseEntity<>(defaultResponseException, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  @ExceptionHandler(FileStorageException.class)
+  public final ResponseEntity<DefaultResponseException> handleFileStorageException(
+      FileStorageException ex, WebRequest request) {
     DefaultResponseException defaultResponseException =
         new DefaultResponseException(
             Instant.now(),
@@ -113,7 +127,11 @@ public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(defaultResponseException, HttpStatus.BAD_REQUEST);
   }
 
-  @ExceptionHandler({PersonNotFoundException.class, BookNotFoundException.class})
+  @ExceptionHandler({
+    PersonNotFoundException.class,
+    BookNotFoundException.class,
+    FileNotFoundException.class
+  })
   public final ResponseEntity<DefaultResponseException> handlerResourceNotFoundException(
       Exception ex, WebRequest request) {
     DefaultResponseException defaultResponseException =
