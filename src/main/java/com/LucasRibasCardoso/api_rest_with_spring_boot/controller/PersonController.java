@@ -4,9 +4,13 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.docs.PersonControllerDocs
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonCreateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonResponseDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonUpdateDto;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.file.exporter.MediaTypes;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.service.PersonService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.net.URI;
+import java.util.List;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,9 +18,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
@@ -50,7 +56,7 @@ public class PersonController implements PersonControllerDocs {
       })
   @Override
   public ResponseEntity<PagedModel<EntityModel<PersonResponseDto>>> findAll(
-      @RequestParam(value = "page", defaultValue = "1") Integer page,
+      @RequestParam(value = "page", defaultValue = "0") Integer page,
       @RequestParam(value = "size", defaultValue = "10") Integer size,
       @RequestParam(value = "direction", defaultValue = "desc") String direction,
       @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
@@ -60,9 +66,9 @@ public class PersonController implements PersonControllerDocs {
         "desc".equalsIgnoreCase(direction) ? Sort.Direction.DESC : Sort.Direction.ASC;
 
     Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
-    Page<PersonResponseDto> personPage = service.findAll(pageable);
+    Page<PersonResponseDto> peoplePage = service.findAll(pageable);
 
-    return ResponseEntity.ok(assembler.toModel(personPage));
+    return ResponseEntity.ok(assembler.toModel(peoplePage));
   }
 
   @GetMapping(
@@ -113,6 +119,20 @@ public class PersonController implements PersonControllerDocs {
     return ResponseEntity.created(location).body(savedPersonResponseDto);
   }
 
+  @PostMapping(
+      value = "/massCreation",
+      produces = {
+        MediaType.APPLICATION_JSON_VALUE,
+        MediaType.APPLICATION_YAML_VALUE,
+        MediaType.APPLICATION_XML_VALUE
+      })
+  @Override
+  public ResponseEntity<List<PersonResponseDto>> massCreation(
+      @RequestParam("file") MultipartFile file) {
+    List<PersonResponseDto> peopleList = service.massCreation(file);
+    return ResponseEntity.ok(peopleList);
+  }
+
   @PatchMapping(
       value = "/{id}",
       produces = {
@@ -151,5 +171,38 @@ public class PersonController implements PersonControllerDocs {
   public ResponseEntity<PersonResponseDto> enablePerson(@PathVariable Long id) {
     PersonResponseDto enabledPersonResponseDto = service.enablePerson(id);
     return ResponseEntity.ok(enabledPersonResponseDto);
+  }
+
+  @GetMapping(
+      value = "/exportPage",
+      produces = {
+        MediaTypes.APPLICATION_XLSX_VALUE,
+        MediaTypes.APPLICATION_CSV_VALUE,
+      })
+  @Override
+  public ResponseEntity<Resource> exportPage(
+      @RequestParam(value = "page", defaultValue = "0") Integer page,
+      @RequestParam(value = "size", defaultValue = "10") Integer size,
+      @RequestParam(value = "direction", defaultValue = "desc") String direction,
+      @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
+      HttpServletRequest request) {
+
+    Sort.Direction sortDirection =
+        "desc".equalsIgnoreCase(direction) ? Sort.Direction.DESC : Sort.Direction.ASC;
+    Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+
+    String acceptHeader = request.getHeader(HttpHeaders.ACCEPT);
+
+    Resource file = service.exportPage(pageable, acceptHeader);
+
+    String contentType = acceptHeader != null ? acceptHeader : "application/octet-stream";
+    String fileExtension =
+        MediaTypes.APPLICATION_XLSX_VALUE.equals(acceptHeader) ? ".xlsx" : ".csv";
+    String fileName = "people_export_" + fileExtension;
+
+    return ResponseEntity.ok()
+        .contentType(MediaType.parseMediaType(contentType))
+        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+        .body(file);
   }
 }

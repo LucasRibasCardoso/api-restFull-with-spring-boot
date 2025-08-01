@@ -3,18 +3,21 @@ package com.LucasRibasCardoso.api_rest_with_spring_boot.exception.handler;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.exceptions.DefaultResponseException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.exceptions.FieldExceptionResponse;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.exceptions.ValidationExceptionResponse;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.CustomValidationException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.RequiredObjectIsNullException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.bookExceptions.BookAlreadyExistsException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.bookExceptions.BookNotFoundException;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.filesExceptions.FileNotFoundException;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.filesExceptions.FileStorageException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.filesExceptions.*;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.personExceptions.PersonAlreadyExistsException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.personExceptions.PersonNotFoundException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import jakarta.validation.ConstraintViolationException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -32,40 +35,42 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestController
 public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
 
-  @ExceptionHandler(Exception.class)
-  public final ResponseEntity<DefaultResponseException> handleAllExceptions(
-      Exception ex, WebRequest request) {
-    DefaultResponseException defaultResponseException =
-        new DefaultResponseException(
-            Instant.now(),
-            HttpStatus.INTERNAL_SERVER_ERROR.value(),
-            ex.getMessage(),
-            request.getDescription(false));
-    return new ResponseEntity<>(defaultResponseException, HttpStatus.INTERNAL_SERVER_ERROR);
+  private static final Logger logger = LoggerFactory.getLogger(CustomizedExceptionHandler.class);
+
+  private DefaultResponseException buildDefaultResponse(
+      HttpStatus status, String message, WebRequest request) {
+    return new DefaultResponseException(
+        Instant.now(), status.value(), message, request.getDescription(false));
   }
 
   @ExceptionHandler(FileStorageException.class)
   public final ResponseEntity<DefaultResponseException> handleFileStorageException(
       FileStorageException ex, WebRequest request) {
-    DefaultResponseException defaultResponseException =
-        new DefaultResponseException(
-            Instant.now(),
-            HttpStatus.INTERNAL_SERVER_ERROR.value(),
-            ex.getMessage(),
-            request.getDescription(false));
-    return new ResponseEntity<>(defaultResponseException, HttpStatus.INTERNAL_SERVER_ERROR);
+    logger.error("File storage error", ex);
+    DefaultResponseException response =
+        buildDefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), request);
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+  }
+
+  @ExceptionHandler(Exception.class)
+  public final ResponseEntity<DefaultResponseException> handleAllExceptions(
+      Exception ex, WebRequest request) {
+    logger.error("Unhandled exception", ex);
+    DefaultResponseException response =
+        buildDefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), request);
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
   }
 
   @ExceptionHandler(DataIntegrityViolationException.class)
   public final ResponseEntity<DefaultResponseException> handleDataIntegrityViolationException(
       DataIntegrityViolationException ex, WebRequest request) {
-    DefaultResponseException defaultResponseException =
-        new DefaultResponseException(
-            Instant.now(),
-            HttpStatus.CONFLICT.value(),
+    logger.warn("Data integrity violation", ex);
+    DefaultResponseException response =
+        buildDefaultResponse(
+            HttpStatus.CONFLICT,
             "Conflito de dados: Um ou mais valores enviados violam restrições do banco de dados.",
-            request.getDescription(false));
-    return new ResponseEntity<>(defaultResponseException, HttpStatus.CONFLICT);
+            request);
+    return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
   }
 
   @Override
@@ -91,7 +96,36 @@ public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
             request.getDescription(false),
             errors);
 
-    return new ResponseEntity<>(validationResponse, HttpStatus.BAD_REQUEST);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(validationResponse);
+  }
+
+  @ExceptionHandler(CustomValidationException.class)
+  protected ResponseEntity<ValidationExceptionResponse> handleCustomValidationException(
+      CustomValidationException ex) {
+
+    ValidationExceptionResponse validationResponse = ex.getValidationResponse();
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(validationResponse);
+  }
+
+  @ExceptionHandler(ConstraintViolationException.class)
+  protected ResponseEntity<ValidationExceptionResponse> handleConstraintViolationException(
+      ConstraintViolationException ex) {
+
+    List<FieldExceptionResponse> errors =
+        ex.getConstraintViolations().stream()
+            .map(
+                v -> {
+                  String invalid = String.valueOf(v.getInvalidValue());
+                  String msg = String.format("%s: %s", v.getMessage(), invalid);
+                  return new FieldExceptionResponse(v.getPropertyPath().toString(), msg);
+                })
+            .toList();
+
+    ValidationExceptionResponse response =
+        new ValidationExceptionResponse(
+            Instant.now(), HttpStatus.BAD_REQUEST.value(), "Invalid request data", null, errors);
+
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
   }
 
   @Override
@@ -120,11 +154,10 @@ public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
               ifx.getValue(), fieldName, acceptedValues);
     }
 
-    DefaultResponseException defaultResponseException =
-        new DefaultResponseException(
-            Instant.now(), HttpStatus.BAD_REQUEST.value(), message, request.getDescription(false));
-
-    return new ResponseEntity<>(defaultResponseException, HttpStatus.BAD_REQUEST);
+    logger.warn("Malformed request body", ex);
+    DefaultResponseException response =
+        buildDefaultResponse(HttpStatus.BAD_REQUEST, message, request);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
   }
 
   @ExceptionHandler({
@@ -134,28 +167,23 @@ public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
   })
   public final ResponseEntity<DefaultResponseException> handlerResourceNotFoundException(
       Exception ex, WebRequest request) {
-    DefaultResponseException defaultResponseException =
-        new DefaultResponseException(
-            Instant.now(),
-            HttpStatus.NOT_FOUND.value(),
-            ex.getMessage(),
-            request.getDescription(false));
-    return new ResponseEntity<>(defaultResponseException, HttpStatus.NOT_FOUND);
+    DefaultResponseException response =
+        buildDefaultResponse(HttpStatus.NOT_FOUND, ex.getMessage(), request);
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
   }
 
   @ExceptionHandler({
     PersonAlreadyExistsException.class,
     BookAlreadyExistsException.class,
-    RequiredObjectIsNullException.class
+    RequiredObjectIsNullException.class,
+    UnsupportedFileExtensionException.class,
+    InvalidFileException.class,
+    ExportFileException.class
   })
   public final ResponseEntity<DefaultResponseException> handlerBadRequestException(
       Exception ex, WebRequest request) {
-    DefaultResponseException defaultResponseException =
-        new DefaultResponseException(
-            Instant.now(),
-            HttpStatus.BAD_REQUEST.value(),
-            ex.getMessage(),
-            request.getDescription(false));
-    return new ResponseEntity<>(defaultResponseException, HttpStatus.BAD_REQUEST);
+    DefaultResponseException response =
+        buildDefaultResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
   }
 }

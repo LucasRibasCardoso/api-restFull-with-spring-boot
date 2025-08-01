@@ -1,6 +1,8 @@
 package com.LucasRibasCardoso.api_rest_with_spring_boot.repository;
 
 import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Person;
+import java.util.Collection;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,4 +25,6 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
   Page<Person> findByFirstNameContainingIgnoreCase(
       @Param("firstName") String firstName, Pageable pageable);
+
+  List<Person> findAllByCpfIn(Collection<String> cpfs);
 }
