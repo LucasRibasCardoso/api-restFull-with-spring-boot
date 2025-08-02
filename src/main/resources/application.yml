@@ -2,12 +2,27 @@ cors:
   originPatterns: http://localhost:8080,http://localhost:3000
 file:
   upload-dir: /home/lucas-ribas-cardoso/Documentos/Projetos/upload-files-from-api-rest/
+email:
+  subject: "Default subject"
+  message: "Default message"
 spring:
   datasource:
     url: jdbc:postgresql://${DB_HOST}:5432/${POSTGRES_DB}?useTimezone=true&serverTimezone=UTC
     username: "${POSTGRES_USER}"
     password: "${POSTGRES_PASSWORD}"
     driver-class-name: org.postgresql.Driver
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: "${EMAIL_USERNAME}"
+    password: "${EMAIL_PASSWORD}"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
   jpa:
     hibernate:
       ddl-auto: none

@@ -8,6 +8,8 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.RequiredObjectI
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.bookExceptions.BookAlreadyExistsException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.bookExceptions.BookNotFoundException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.filesExceptions.*;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.mailExceptions.InvalidEmailException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.mailExceptions.SendFailedEmailException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.personExceptions.PersonAlreadyExistsException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.personExceptions.PersonNotFoundException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -178,7 +180,9 @@ public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
     RequiredObjectIsNullException.class,
     UnsupportedFileExtensionException.class,
     InvalidFileException.class,
-    ExportFileException.class
+    ExportFileException.class,
+    InvalidEmailException.class,
+    SendFailedEmailException.class
   })
   public final ResponseEntity<DefaultResponseException> handlerBadRequestException(
       Exception ex, WebRequest request) {
