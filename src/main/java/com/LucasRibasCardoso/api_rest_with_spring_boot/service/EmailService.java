@@ -5,13 +5,12 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.mail.EmailRequestDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.mail.EmailSender;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
+import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
 
 @Service
 public class EmailService {

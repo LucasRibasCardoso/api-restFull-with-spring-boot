@@ -32,5 +32,6 @@ public interface EmailControllerDocs {
   @BadRequestApiResponseDoc
   @UnauthorizedApiResponseDoc
   @InternalServerErrorApiResponseDoc
-  ResponseEntity<String> sendEmailWithAttachment(String emailRequestJson, MultipartFile multipartFile);
+  ResponseEntity<String> sendEmailWithAttachment(
+      String emailRequestJson, MultipartFile multipartFile);
 }
