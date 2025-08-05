@@ -5,6 +5,14 @@ file:
 email:
   subject: "Default subject"
   message: "Default message"
+security:
+  jwt:
+    secret-key: "${JWT_SECRET_KEY}"
+    expiration: "${JWT_EXPIRATION_MS:3600000}" # 1 hora
+  password:
+    encoder:
+      secret: "${PASSWORD_ENCODER_SECRET}"
+      iterations: "${PASSWORD_ENCODER_ITERATIONS:185000}" # 185.000 iterações
 spring:
   datasource:
     url: jdbc:postgresql://${DB_HOST}:5432/${POSTGRES_DB}?useTimezone=true&serverTimezone=UTC
@@ -43,6 +51,8 @@ logging:
   level:
     root: info
 spring-doc:
-  paths-to-match: /api/v1/**/**
+  paths-to-match:
+    - /auth/**
+    - /api/v1/**/**
   swagger-ui:
     use-root-path: true

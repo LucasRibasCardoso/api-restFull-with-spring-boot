@@ -3,29 +3,32 @@ package com.LucasRibasCardoso.api_rest_with_spring_boot.exception.handler;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.exceptions.DefaultResponseException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.exceptions.FieldExceptionResponse;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.exceptions.ValidationExceptionResponse;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.CustomValidationException;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.RequiredObjectIsNullException;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.bookExceptions.BookAlreadyExistsException;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.bookExceptions.BookNotFoundException;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.filesExceptions.*;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.mailExceptions.InvalidEmailException;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.mailExceptions.SendFailedEmailException;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.personExceptions.PersonAlreadyExistsException;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.personExceptions.PersonNotFoundException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.book.BookAlreadyExistsException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.book.BookNotFoundException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.file.*;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.global.CustomValidationException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.global.RequiredObjectIsNullException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.mail.InvalidEmailException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.mail.SendFailedEmailException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.person.PersonAlreadyExistsException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.person.PersonNotFoundException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.user.InvalidPasswordException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.user.PermissionNotFoundException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.user.UserAlreadyExistsException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.user.UserNotFoundException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.validation.ConstraintViolationException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,42 +40,41 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestController
 public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
 
-  private static final Logger logger = LoggerFactory.getLogger(CustomizedExceptionHandler.class);
-
   private DefaultResponseException buildDefaultResponse(
       HttpStatus status, String message, WebRequest request) {
     return new DefaultResponseException(
         Instant.now(), status.value(), message, request.getDescription(false));
   }
 
-  @ExceptionHandler(FileStorageException.class)
-  public final ResponseEntity<DefaultResponseException> handleFileStorageException(
-      FileStorageException ex, WebRequest request) {
-    logger.error("File storage error", ex);
-    DefaultResponseException response =
-        buildDefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), request);
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-  }
+  @Override
+  protected ResponseEntity<Object> handleHttpMessageNotReadable(
+      HttpMessageNotReadableException ex,
+      HttpHeaders headers,
+      HttpStatusCode status,
+      WebRequest request) {
 
-  @ExceptionHandler(Exception.class)
-  public final ResponseEntity<DefaultResponseException> handleAllExceptions(
-      Exception ex, WebRequest request) {
-    logger.error("Unhandled exception", ex);
-    DefaultResponseException response =
-        buildDefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), request);
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-  }
+    String message = "O corpo da requisição é inválido ou está mal formatado.";
 
-  @ExceptionHandler(DataIntegrityViolationException.class)
-  public final ResponseEntity<DefaultResponseException> handleDataIntegrityViolationException(
-      DataIntegrityViolationException ex, WebRequest request) {
-    logger.warn("Data integrity violation", ex);
+    if (ex.getCause() instanceof InvalidFormatException ifx
+        && ifx.getTargetType() != null
+        && ifx.getTargetType().isEnum()) {
+      String fieldName =
+          ifx.getPath().stream()
+              .map(com.fasterxml.jackson.databind.JsonMappingException.Reference::getFieldName)
+              .collect(Collectors.joining("."));
+      String acceptedValues =
+          Arrays.stream(ifx.getTargetType().getEnumConstants())
+              .map(Object::toString)
+              .collect(Collectors.joining(", "));
+      message =
+          String.format(
+              "O valor '%s' não é válido para o campo '%s'. Os valores aceitos são: %s.",
+              ifx.getValue(), fieldName, acceptedValues);
+    }
+
     DefaultResponseException response =
-        buildDefaultResponse(
-            HttpStatus.CONFLICT,
-            "Conflito de dados: Um ou mais valores enviados violam restrições do banco de dados.",
-            request);
-    return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        buildDefaultResponse(HttpStatus.BAD_REQUEST, message, request);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
   }
 
   @Override
@@ -99,6 +101,25 @@ public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
             errors);
 
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(validationResponse);
+  }
+
+  @ExceptionHandler(Exception.class)
+  public final ResponseEntity<DefaultResponseException> handleAllExceptions(WebRequest request) {
+    DefaultResponseException response =
+        buildDefaultResponse(
+            HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred", request);
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+  }
+
+  @ExceptionHandler(DataIntegrityViolationException.class)
+  public final ResponseEntity<DefaultResponseException> handleDataIntegrityViolationException(
+      DataIntegrityViolationException ex, WebRequest request) {
+    DefaultResponseException response =
+        buildDefaultResponse(
+            HttpStatus.CONFLICT,
+            "Conflito de dados: Um ou mais valores enviados violam restrições do banco de dados.",
+            request);
+    return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
   }
 
   @ExceptionHandler(CustomValidationException.class)
@@ -130,64 +151,139 @@ public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
   }
 
-  @Override
-  protected ResponseEntity<Object> handleHttpMessageNotReadable(
-      HttpMessageNotReadableException ex,
-      HttpHeaders headers,
-      HttpStatusCode status,
-      WebRequest request) {
-
-    String message = "O corpo da requisição é inválido ou está mal formatado.";
-
-    if (ex.getCause() instanceof InvalidFormatException ifx
-        && ifx.getTargetType() != null
-        && ifx.getTargetType().isEnum()) {
-      String fieldName =
-          ifx.getPath().stream()
-              .map(com.fasterxml.jackson.databind.JsonMappingException.Reference::getFieldName)
-              .collect(Collectors.joining("."));
-      String acceptedValues =
-          Arrays.stream(ifx.getTargetType().getEnumConstants())
-              .map(Object::toString)
-              .collect(Collectors.joining(", "));
-      message =
-          String.format(
-              "O valor '%s' não é válido para o campo '%s'. Os valores aceitos são: %s.",
-              ifx.getValue(), fieldName, acceptedValues);
-    }
-
-    logger.warn("Malformed request body", ex);
-    DefaultResponseException response =
-        buildDefaultResponse(HttpStatus.BAD_REQUEST, message, request);
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-  }
-
-  @ExceptionHandler({
-    PersonNotFoundException.class,
-    BookNotFoundException.class,
-    FileNotFoundException.class
-  })
-  public final ResponseEntity<DefaultResponseException> handlerResourceNotFoundException(
+  @ExceptionHandler({PersonNotFoundException.class})
+  public final ResponseEntity<DefaultResponseException> handlerPersonNotFoundException(
       Exception ex, WebRequest request) {
     DefaultResponseException response =
         buildDefaultResponse(HttpStatus.NOT_FOUND, ex.getMessage(), request);
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
   }
 
-  @ExceptionHandler({
-    PersonAlreadyExistsException.class,
-    BookAlreadyExistsException.class,
-    RequiredObjectIsNullException.class,
-    UnsupportedFileExtensionException.class,
-    InvalidFileException.class,
-    ExportFileException.class,
-    InvalidEmailException.class,
-    SendFailedEmailException.class
-  })
-  public final ResponseEntity<DefaultResponseException> handlerBadRequestException(
+  @ExceptionHandler(BookNotFoundException.class)
+  public final ResponseEntity<DefaultResponseException> handlerBookNotFoundException(
+      BookNotFoundException ex, WebRequest request) {
+    DefaultResponseException response =
+        buildDefaultResponse(HttpStatus.NOT_FOUND, ex.getMessage(), request);
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+  }
+
+  @ExceptionHandler(FileNotFoundException.class)
+  public final ResponseEntity<DefaultResponseException> handleFileNotFoundException(
+      FileNotFoundException ex, WebRequest request) {
+    DefaultResponseException response =
+        buildDefaultResponse(HttpStatus.NOT_FOUND, ex.getMessage(), request);
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+  }
+
+  @ExceptionHandler(UserNotFoundException.class)
+  public final ResponseEntity<DefaultResponseException> handlerUserNotFoundException(
+      UserNotFoundException ex, WebRequest request) {
+    DefaultResponseException response =
+        buildDefaultResponse(HttpStatus.NOT_FOUND, ex.getMessage(), request);
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+  }
+
+  @ExceptionHandler(UserAlreadyExistsException.class)
+  public final ResponseEntity<DefaultResponseException> handlerUserAlreadyExistsException(
+      UserAlreadyExistsException ex, WebRequest request) {
+    DefaultResponseException response =
+        buildDefaultResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+  }
+
+  @ExceptionHandler(PersonAlreadyExistsException.class)
+  public final ResponseEntity<DefaultResponseException> handlerPersonAlreadyExistsException(
       Exception ex, WebRequest request) {
     DefaultResponseException response =
         buildDefaultResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+  }
+
+  @ExceptionHandler(BookAlreadyExistsException.class)
+  public final ResponseEntity<DefaultResponseException> handlerBookAlreadyExistsException(
+      BookAlreadyExistsException ex, WebRequest request) {
+    DefaultResponseException response =
+        buildDefaultResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+  }
+
+  @ExceptionHandler(SendFailedEmailException.class)
+  public final ResponseEntity<DefaultResponseException> handlerBadRequestException(
+      SendFailedEmailException ex, WebRequest request) {
+    DefaultResponseException response =
+        buildDefaultResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+  }
+
+  @ExceptionHandler(InvalidEmailException.class)
+  public final ResponseEntity<DefaultResponseException> handlerInvalidEmailException(
+      InvalidEmailException ex, WebRequest request) {
+    DefaultResponseException response =
+        buildDefaultResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+  }
+
+  @ExceptionHandler(ExportFileException.class)
+  public final ResponseEntity<DefaultResponseException> handlerBadRequestException(
+      ExportFileException ex, WebRequest request) {
+    DefaultResponseException response =
+        buildDefaultResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+  }
+
+  @ExceptionHandler(InvalidFileException.class)
+  public final ResponseEntity<DefaultResponseException> handlerInvalidFileException(
+      InvalidFileException ex, WebRequest request) {
+    DefaultResponseException response =
+        buildDefaultResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+  }
+
+  @ExceptionHandler(FileStorageException.class)
+  public final ResponseEntity<DefaultResponseException> handleFileStorageException(
+      FileStorageException ex, WebRequest request) {
+    DefaultResponseException response =
+        buildDefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), request);
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+  }
+
+  @ExceptionHandler(UnsupportedFileExtensionException.class)
+  public final ResponseEntity<DefaultResponseException> handlerUnsupportedFileExtensionException(
+      UnsupportedFileExtensionException ex, WebRequest request) {
+    DefaultResponseException response =
+        buildDefaultResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+  }
+
+  @ExceptionHandler(RequiredObjectIsNullException.class)
+  public final ResponseEntity<DefaultResponseException> handlerRequiredObjectIsNullException(
+      RequiredObjectIsNullException ex, WebRequest request) {
+    DefaultResponseException response =
+        buildDefaultResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+  }
+
+  @ExceptionHandler(BadCredentialsException.class)
+  public final ResponseEntity<DefaultResponseException> handlerBadCredentialsException(
+      BadCredentialsException ex, WebRequest request) {
+    DefaultResponseException response =
+        buildDefaultResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), request);
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+  }
+
+  @ExceptionHandler(InvalidPasswordException.class)
+  public final ResponseEntity<DefaultResponseException> handlerInvalidPasswordException(
+      InvalidPasswordException ex, WebRequest request) {
+    DefaultResponseException response =
+        buildDefaultResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+  }
+
+  @ExceptionHandler(PermissionNotFoundException.class)
+  public final ResponseEntity<DefaultResponseException> handlerPermissionNotFoundException(
+      PermissionNotFoundException ex, WebRequest request) {
+    DefaultResponseException response =
+        buildDefaultResponse(HttpStatus.NOT_FOUND, ex.getMessage(), request);
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
   }
 }

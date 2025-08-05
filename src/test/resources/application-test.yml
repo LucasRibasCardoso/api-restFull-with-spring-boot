@@ -7,6 +7,14 @@ file:
 email:
   subject: "Default subject"
   message: "Default message"
+security:
+  jwt:
+    secret-key: "${JWT_SECRET_KEY}"
+    expiration: "${JWT_EXPIRATION_MS:3600000}" # 1 hora
+  password:
+    encoder:
+      secret: "${PASSWORD_ENCODER_SECRET}"
+      iterations: "${PASSWORD_ENCODER_ITERATIONS:185000}" # 185.000 iterações
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
