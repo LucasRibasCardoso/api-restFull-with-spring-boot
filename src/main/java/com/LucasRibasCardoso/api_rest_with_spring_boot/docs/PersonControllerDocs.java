@@ -120,10 +120,10 @@ public interface PersonControllerDocs {
   @UnauthorizedApiResponseDoc
   @InternalServerErrorApiResponseDoc
   ResponseEntity<PagedModel<EntityModel<PersonResponseDto>>> findByName(
-      @PathVariable String firstName,
+      @PathVariable("firstName") String firstName,
       @RequestParam(value = "page", defaultValue = "0") Integer page,
       @RequestParam(value = "size", defaultValue = "10") Integer size,
-      @RequestParam(value = "direction", defaultValue = "ASC") String direction,
+      @RequestParam(value = "direction", defaultValue = "desc") String direction,
       @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
       PagedResourcesAssembler<PersonResponseDto> assembler);
 

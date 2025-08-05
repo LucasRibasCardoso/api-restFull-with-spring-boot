@@ -1,8 +1,8 @@
 package com.LucasRibasCardoso.api_rest_with_spring_boot.service;
 
 import com.LucasRibasCardoso.api_rest_with_spring_boot.config.FileStorageConfig;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.filesExceptions.FileNotFoundException;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.filesExceptions.FileStorageException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.file.FileNotFoundException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.file.FileStorageException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;

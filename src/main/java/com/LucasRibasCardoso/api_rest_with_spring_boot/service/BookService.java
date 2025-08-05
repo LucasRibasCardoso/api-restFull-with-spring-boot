@@ -7,9 +7,9 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.controller.BookController
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookCreateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookResponseDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookUpdateDto;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.RequiredObjectIsNullException;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.bookExceptions.BookAlreadyExistsException;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.bookExceptions.BookNotFoundException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.book.BookAlreadyExistsException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.book.BookNotFoundException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.global.RequiredObjectIsNullException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.mapper.BookMapper;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Book;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.repository.BookRepository;

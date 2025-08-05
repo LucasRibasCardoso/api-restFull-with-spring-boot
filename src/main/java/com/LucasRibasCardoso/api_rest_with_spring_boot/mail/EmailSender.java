@@ -1,8 +1,8 @@
 package com.LucasRibasCardoso.api_rest_with_spring_boot.mail;
 
 import com.LucasRibasCardoso.api_rest_with_spring_boot.config.EmailConfig;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.mailExceptions.InvalidEmailException;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.mailExceptions.SendFailedEmailException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.mail.InvalidEmailException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.mail.SendFailedEmailException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;

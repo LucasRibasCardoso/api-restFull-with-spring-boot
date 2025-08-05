@@ -1,4 +1,4 @@
-package com.LucasRibasCardoso.api_rest_with_spring_boot.exception;
+package com.LucasRibasCardoso.api_rest_with_spring_boot.exception.global;
 
 public class RequiredObjectIsNullException extends RuntimeException {
 

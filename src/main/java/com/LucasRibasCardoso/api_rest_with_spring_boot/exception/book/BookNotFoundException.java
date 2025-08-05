@@ -1,4 +1,4 @@
-package com.LucasRibasCardoso.api_rest_with_spring_boot.exception.bookExceptions;
+package com.LucasRibasCardoso.api_rest_with_spring_boot.exception.book;
 
 public class BookNotFoundException extends RuntimeException {
   public BookNotFoundException(String message) {

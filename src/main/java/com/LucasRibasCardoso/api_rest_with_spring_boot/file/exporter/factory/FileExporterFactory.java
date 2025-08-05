@@ -1,6 +1,6 @@
 package com.LucasRibasCardoso.api_rest_with_spring_boot.file.exporter.factory;
 
-import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.filesExceptions.UnsupportedFileExtensionException;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.file.UnsupportedFileExtensionException;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.file.exporter.MediaTypes;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.file.exporter.contract.FileExporter;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.file.exporter.implementation.CsvExporter;
