@@ -1,4 +1,4 @@
-package com.LucasRibasCardoso.api_rest_with_spring_boot.security.jwt;
+package com.LucasRibasCardoso.api_rest_with_spring_boot.config.jwt;
 
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.security.TokenResponseDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.exception.security.InvalidJwtAuthenticationException;

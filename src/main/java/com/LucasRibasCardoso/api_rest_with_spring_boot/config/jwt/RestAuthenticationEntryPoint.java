@@ -1,4 +1,4 @@
-package com.LucasRibasCardoso.api_rest_with_spring_boot.security.jwt;
+package com.LucasRibasCardoso.api_rest_with_spring_boot.config.jwt;
 
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.exceptions.DefaultResponseException;
 import com.fasterxml.jackson.databind.ObjectMapper;

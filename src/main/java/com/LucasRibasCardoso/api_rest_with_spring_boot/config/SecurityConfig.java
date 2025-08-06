@@ -1,7 +1,7 @@
 package com.LucasRibasCardoso.api_rest_with_spring_boot.config;
 
-import com.LucasRibasCardoso.api_rest_with_spring_boot.security.jwt.JwtTokenFilter;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.security.jwt.RestAuthenticationEntryPoint;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.config.jwt.JwtTokenFilter;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.config.jwt.RestAuthenticationEntryPoint;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;

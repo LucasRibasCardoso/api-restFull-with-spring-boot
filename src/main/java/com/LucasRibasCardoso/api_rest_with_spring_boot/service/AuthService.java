@@ -13,7 +13,7 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Permission;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.model.User;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.repository.PermissionRepository;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.repository.UserRepository;
-import com.LucasRibasCardoso.api_rest_with_spring_boot.security.jwt.JwtTokenProvider;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.config.jwt.JwtTokenProvider;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;

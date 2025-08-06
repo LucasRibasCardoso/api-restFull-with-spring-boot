@@ -43,7 +43,7 @@ class PersonControllerCorsTest extends AbstractIntegrationTest {
   @Test
   @Order(1)
   void signIn() {
-    LoginRequestDto loginRequestDto = new LoginRequestDto("Username1", "1384");
+    LoginRequestDto loginRequestDto = new LoginRequestDto("username1", "1384");
 
     tokenDto =
         given()
