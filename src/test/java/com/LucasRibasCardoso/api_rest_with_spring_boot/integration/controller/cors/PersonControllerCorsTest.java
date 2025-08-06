@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonCreateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonResponseDto;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.security.LoginRequestDto;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.security.TokenResponseDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.integration.AbstractIntegrationTest;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.integration.config.TestsConfigs;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Gender;
@@ -17,18 +19,19 @@ import java.io.IOException;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.DeserializationFeature;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-@SpringBootTest(
-    webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
-    properties = {"server.port=8888"})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ActiveProfiles("test")
 class PersonControllerCorsTest extends AbstractIntegrationTest {
 
   private static RequestSpecification specification;
   private static ObjectMapper objectMapper;
 
+  private static TokenResponseDto tokenDto;
   private static PersonResponseDto personResponse;
 
   @BeforeAll
@@ -39,12 +42,37 @@ class PersonControllerCorsTest extends AbstractIntegrationTest {
 
   @Test
   @Order(1)
+  void signIn() {
+    LoginRequestDto loginRequestDto = new LoginRequestDto("Username1", "1384");
+
+    tokenDto =
+        given()
+            .basePath("/auth/signin")
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .port(TestsConfigs.SERVER_PORT)
+            .body(loginRequestDto)
+            .when()
+            .post()
+            .then()
+            .statusCode(200)
+            .extract()
+            .body()
+            .as(TokenResponseDto.class);
+
+    assertNotNull(tokenDto);
+    assertNotNull(tokenDto.accessToken());
+    assertNotNull(tokenDto.refreshToken());
+  }
+
+  @Test
+  @Order(2)
   void save() throws IOException {
     PersonCreateDto personCreate = new PersonCreateDto("John", "Doe", "057.657.780-46", Gender.M);
 
     specification =
         new RequestSpecBuilder()
             .addHeader(TestsConfigs.HEADER_PARAM_ORIGIN, TestsConfigs.ORIGIN_VALID)
+            .addHeader(TestsConfigs.HEADER_PARAM_AUTHORIZATION, "Bearer " + tokenDto.accessToken())
             .setBasePath("/api/v1/person")
             .setPort(TestsConfigs.SERVER_PORT)
             .addFilter(new RequestLoggingFilter(LogDetail.ALL))
@@ -80,13 +108,14 @@ class PersonControllerCorsTest extends AbstractIntegrationTest {
   }
 
   @Test
-  @Order(2)
+  @Order(3)
   void saveWithWrongOrigin() throws IOException {
     PersonCreateDto personCreate = new PersonCreateDto("John", "Doe", "057.657.780-46", Gender.M);
 
     specification =
         new RequestSpecBuilder()
             .addHeader(TestsConfigs.HEADER_PARAM_ORIGIN, TestsConfigs.ORIGIN_INVALID)
+            .addHeader(TestsConfigs.HEADER_PARAM_AUTHORIZATION, "Bearer " + tokenDto.accessToken())
             .setBasePath("/api/v1/person")
             .setPort(TestsConfigs.SERVER_PORT)
             .addFilter(new RequestLoggingFilter(LogDetail.ALL))
@@ -109,11 +138,12 @@ class PersonControllerCorsTest extends AbstractIntegrationTest {
   }
 
   @Test
-  @Order(3)
+  @Order(4)
   void findById() throws IOException {
     specification =
         new RequestSpecBuilder()
             .addHeader(TestsConfigs.HEADER_PARAM_ORIGIN, TestsConfigs.ORIGIN_LOCAL)
+            .addHeader(TestsConfigs.HEADER_PARAM_AUTHORIZATION, "Bearer " + tokenDto.accessToken())
             .setBasePath("/api/v1/person")
             .setPort(TestsConfigs.SERVER_PORT)
             .addFilter(new RequestLoggingFilter(LogDetail.ALL))
@@ -149,11 +179,12 @@ class PersonControllerCorsTest extends AbstractIntegrationTest {
   }
 
   @Test
-  @Order(3)
+  @Order(5)
   void findByIdWithWrongOrigin() throws IOException {
     specification =
         new RequestSpecBuilder()
             .addHeader(TestsConfigs.HEADER_PARAM_ORIGIN, TestsConfigs.ORIGIN_INVALID)
+            .addHeader(TestsConfigs.HEADER_PARAM_AUTHORIZATION, "Bearer " + tokenDto.accessToken())
             .setBasePath("/api/v1/person")
             .setPort(TestsConfigs.SERVER_PORT)
             .addFilter(new RequestLoggingFilter(LogDetail.ALL))

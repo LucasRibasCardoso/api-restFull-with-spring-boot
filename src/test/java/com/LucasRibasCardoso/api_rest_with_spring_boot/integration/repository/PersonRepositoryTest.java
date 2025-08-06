@@ -1,24 +1,28 @@
-package com.LucasRibasCardoso.api_rest_with_spring_boot.repository;
+package com.LucasRibasCardoso.api_rest_with_spring_boot.integration.repository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.LucasRibasCardoso.api_rest_with_spring_boot.integration.AbstractIntegrationTest;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Gender;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Person;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.repository.PersonRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ActiveProfiles("test")
 class PersonRepositoryTest extends AbstractIntegrationTest {
 
   @Autowired private PersonRepository repository;

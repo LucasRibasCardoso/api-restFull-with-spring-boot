@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookCreateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookUpdateDto;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.security.LoginRequestDto;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.security.TokenResponseDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.integration.AbstractIntegrationTest;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.integration.config.TestsConfigs;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.integration.dto.BookResponseDto;
@@ -27,16 +29,17 @@ import java.time.format.DateTimeFormatter;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest(
-    webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
-    properties = {"server.port=8888"})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ActiveProfiles("test")
 class BookControllerJsonTest extends AbstractIntegrationTest {
 
   private static RequestSpecification specification;
   private static ObjectMapper objectMapper;
   private static BookResponseDto bookResponse;
+  private static TokenResponseDto tokenDto;
 
   @BeforeAll
   static void setUp() {
@@ -47,11 +50,35 @@ class BookControllerJsonTest extends AbstractIntegrationTest {
     jtm.addSerializer(LocalDate.class, new LocalDateSerializer(fmt));
     objectMapper.registerModule(jtm);
     objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
     bookResponse = new BookResponseDto();
+  }
+
+  @Test
+  @Order(1)
+  void signIn() {
+    LoginRequestDto loginRequestDto = new LoginRequestDto("Username1", "1384");
+
+    tokenDto =
+        given()
+            .basePath("/auth/signin")
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .port(TestsConfigs.SERVER_PORT)
+            .body(loginRequestDto)
+            .when()
+            .post()
+            .then()
+            .statusCode(200)
+            .extract()
+            .body()
+            .as(TokenResponseDto.class);
+
+    assertNotNull(tokenDto);
+    assertNotNull(tokenDto.accessToken());
+
     specification =
         new RequestSpecBuilder()
             .addHeader(TestsConfigs.HEADER_PARAM_ORIGIN, TestsConfigs.ORIGIN_VALID)
+            .addHeader(TestsConfigs.HEADER_PARAM_AUTHORIZATION, "Bearer " + tokenDto.accessToken())
             .setBasePath("/api/v1/books")
             .setPort(TestsConfigs.SERVER_PORT)
             .addFilter(new RequestLoggingFilter(LogDetail.ALL))
@@ -60,7 +87,7 @@ class BookControllerJsonTest extends AbstractIntegrationTest {
   }
 
   @Test
-  @Order(1)
+  @Order(2)
   void create() throws IOException {
     BookCreateDto bookCreateDto =
         new BookCreateDto(
@@ -93,7 +120,7 @@ class BookControllerJsonTest extends AbstractIntegrationTest {
   }
 
   @Test
-  @Order(2)
+  @Order(3)
   void update() throws IOException {
     BookUpdateDto bookUpdateDto = new BookUpdateDto("The Great Gatsby - Updated", null, null, null);
 
@@ -117,7 +144,7 @@ class BookControllerJsonTest extends AbstractIntegrationTest {
   }
 
   @Test
-  @Order(3)
+  @Order(4)
   void findById() throws IOException {
     String content =
         given(specification)
@@ -136,7 +163,7 @@ class BookControllerJsonTest extends AbstractIntegrationTest {
   }
 
   @Test
-  @Order(4)
+  @Order(5)
   void delete() {
     given(specification)
         .pathParam("id", bookResponse.getId())
@@ -147,7 +174,7 @@ class BookControllerJsonTest extends AbstractIntegrationTest {
   }
 
   @Test
-  @Order(5)
+  @Order(6)
   void findAll() throws JsonProcessingException {
     String content =
         given(specification)

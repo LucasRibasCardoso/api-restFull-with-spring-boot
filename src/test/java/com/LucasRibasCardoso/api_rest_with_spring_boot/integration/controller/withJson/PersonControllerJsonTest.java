@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonCreateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonUpdateDto;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.security.LoginRequestDto;
+import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.security.TokenResponseDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.integration.AbstractIntegrationTest;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.integration.config.TestsConfigs;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.integration.dto.PersonResponseDto;
@@ -19,27 +21,54 @@ import java.io.IOException;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.DeserializationFeature;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-@SpringBootTest(
-    webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
-    properties = {"server.port=8888"})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ActiveProfiles("test")
 class PersonControllerJsonTest extends AbstractIntegrationTest {
 
   private static RequestSpecification specification;
   private static ObjectMapper objectMapper;
   private static PersonResponseDto personResponse;
+  private static TokenResponseDto tokenDto;
 
   @BeforeAll
   static void setUp() {
     objectMapper = new ObjectMapper();
     objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     personResponse = new PersonResponseDto();
+  }
+
+  @Test
+  @Order(1)
+  void signIn() {
+    LoginRequestDto loginRequestDto = new LoginRequestDto("Username1", "1384");
+
+    tokenDto =
+        given()
+            .basePath("/auth/signin")
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .port(TestsConfigs.SERVER_PORT)
+            .body(loginRequestDto)
+            .when()
+            .post()
+            .then()
+            .statusCode(200)
+            .extract()
+            .body()
+            .as(TokenResponseDto.class);
+
+    assertNotNull(tokenDto);
+    assertNotNull(tokenDto.accessToken());
+    assertNotNull(tokenDto.refreshToken());
+
     specification =
         new RequestSpecBuilder()
             .addHeader(TestsConfigs.HEADER_PARAM_ORIGIN, TestsConfigs.ORIGIN_VALID)
+            .addHeader(TestsConfigs.HEADER_PARAM_AUTHORIZATION, "Bearer " + tokenDto.accessToken())
             .setBasePath("/api/v1/person")
             .setPort(TestsConfigs.SERVER_PORT)
             .addFilter(new RequestLoggingFilter(LogDetail.ALL))
@@ -48,7 +77,7 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
   }
 
   @Test
-  @Order(1)
+  @Order(2)
   void createTest() throws IOException {
     PersonCreateDto personCreate = new PersonCreateDto("John", "Doe", "030.228.230-02", Gender.M);
 
@@ -75,7 +104,7 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
   }
 
   @Test
-  @Order(2)
+  @Order(3)
   void updateTest() throws IOException {
     PersonUpdateDto update = new PersonUpdateDto("Jane", null, null, null);
     String content =
@@ -97,7 +126,7 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
   }
 
   @Test
-  @Order(3)
+  @Order(4)
   void findByIdTest() throws IOException {
     String content =
         given(specification)
@@ -116,7 +145,7 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
   }
 
   @Test
-  @Order(4)
+  @Order(5)
   void disableTest() throws IOException {
     String content =
         given(specification)
@@ -135,7 +164,7 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
   }
 
   @Test
-  @Order(5)
+  @Order(6)
   void enablePerson() throws IOException {
     String content =
         given(specification)
@@ -154,7 +183,7 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
   }
 
   @Test
-  @Order(6)
+  @Order(7)
   void delete() {
     given(specification)
         .pathParam("id", personResponse.getId())
@@ -165,7 +194,7 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
   }
 
   @Test
-  @Order(7)
+  @Order(8)
   void findAll() throws IOException {
     String content =
         given(specification)
@@ -236,7 +265,7 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
   }
 
   @Test
-  @Order(8)
+  @Order(9)
   void findByName() throws IOException {
     String content =
         given(specification)
