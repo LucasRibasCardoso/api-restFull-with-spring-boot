@@ -1,34 +1,54 @@
 services:
-  postgres-db:
+  postgres:
     image: postgres:16-alpine
-    container_name: postgres-db
-    restart: always
-    env_file:
-      - .env
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-    # Verifica se o banco de dados esta pronto para aceitar conexões
+    container_name: postgres
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
       interval: 10s
       timeout: 5s
       retries: 5
-  my-app:
-    build: .
-    container_name: my-app
-    restart: always
-    env_file:
-      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - api-rest-network
+
+  api-rest:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: api-rest
+    depends_on:
+      postgres:
+        condition: service_healthy
     ports:
       - "8080:8080"
+    environment:
+      DB_HOST: ${DB_HOST}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      EMAIL_USERNAME: ${EMAIL_USERNAME}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS}
+      PASSWORD_ENCODER_SECRET: ${PASSWORD_ENCODER_SECRET}
+      PASSWORD_ENCODER_ITERATIONS: ${PASSWORD_ENCODER_ITERATIONS}
     volumes:
-      - ./uploads:/uploads
-    # Espera o banco de dados estar pronto para se conectar
-    depends_on:
-      postgres-db:
-        condition: service_healthy
+      - uploads_data:/uploads
+    networks:
+      - api-rest-network
+    profiles:
+      - "full"
 volumes:
   postgres_data:
+  uploads_data:
+
+networks:
+  api-rest-network:
+    driver: bridge

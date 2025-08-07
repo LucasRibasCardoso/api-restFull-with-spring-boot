@@ -56,3 +56,8 @@ spring-doc:
     - /api/v1/**/**
   swagger-ui:
     use-root-path: true
+management:
+  endpoints:
+    web:
+      exposure:
+        health:

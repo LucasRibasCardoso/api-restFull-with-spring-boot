@@ -96,7 +96,8 @@ public class SecurityConfig {
                         "/auth/signup",
                         "/auth/refresh-token/**",
                         "/swagger-ui/**",
-                        "/v3/api-docs/**")
+                        "/v3/api-docs/**",
+                        "/actuator/health")
                     .permitAll()
                     // Endpoint de criação de usuário apenas em DEV (usar @Profile)
                     .requestMatchers("/auth/create-user")

@@ -133,12 +133,11 @@
             <version>5.5.5</version>
             <scope>test</scope>
         </dependency>
-        <!-- pom.xml -->
+
+        <!-- Metrics dependencies -->
         <dependency>
-            <groupId>io.github.cdimascio</groupId>
-            <artifactId>java-dotenv</artifactId>
-            <version>5.2.2</version>
-            <scope>test</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
     </dependencies>
 
