@@ -28,7 +28,7 @@ public class FileController implements FileControllerDocs {
     this.fileStorageService = fileStorageService;
   }
 
-  @PostMapping("/uploadFile")
+  @PostMapping(value = "/uploadFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @Override
   public UploadFileResponseDto uploadFile(@RequestParam("file") MultipartFile file) {
     String fileName = fileStorageService.fileUpload(file);
@@ -43,7 +43,7 @@ public class FileController implements FileControllerDocs {
         fileName, fileDownloadUri, file.getContentType(), file.getSize());
   }
 
-  @PostMapping("/uploadFiles")
+  @PostMapping(value = "/uploadFiles", consumes =  MediaType.MULTIPART_FORM_DATA_VALUE)
   @Override
   public List<UploadFileResponseDto> uploadMultiFiles(
       @RequestParam("files") MultipartFile[] files) {

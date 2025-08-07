@@ -11,6 +11,7 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonResponse
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonUpdateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.file.exporter.MediaTypes;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -94,7 +95,7 @@ public interface PersonControllerDocs {
       @RequestParam(value = "size", defaultValue = "10") Integer size,
       @RequestParam(value = "direction", defaultValue = "ASC") String direction,
       @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
-      PagedResourcesAssembler<PersonResponseDto> assembler);
+      @Parameter(hidden = true) PagedResourcesAssembler<PersonResponseDto> assembler);
 
   @Operation(
       summary = "Find people filtered by first name",
@@ -125,7 +126,7 @@ public interface PersonControllerDocs {
       @RequestParam(value = "size", defaultValue = "10") Integer size,
       @RequestParam(value = "direction", defaultValue = "desc") String direction,
       @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
-      PagedResourcesAssembler<PersonResponseDto> assembler);
+      @Parameter(hidden = true) PagedResourcesAssembler<PersonResponseDto> assembler);
 
   @Operation(
       summary = "Create a person",

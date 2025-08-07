@@ -5,6 +5,7 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookCreateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookResponseDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookUpdateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.service.BookService;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import java.net.URI;
 import org.springframework.data.domain.Page;
@@ -54,7 +55,7 @@ public class BookController implements BookControllerDocs {
       @RequestParam(value = "size", defaultValue = "10") Integer size,
       @RequestParam(value = "direction", defaultValue = "desc") String direction,
       @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
-      PagedResourcesAssembler<BookResponseDto> assembler) {
+      @Parameter(hidden = true)PagedResourcesAssembler<BookResponseDto> assembler) {
 
     Sort.Direction sortDirection =
         "desc".equalsIgnoreCase(direction) ? Sort.Direction.DESC : Sort.Direction.ASC;

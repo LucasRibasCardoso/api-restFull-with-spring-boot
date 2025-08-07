@@ -1,7 +1,7 @@
 cors:
   originPatterns: http://localhost:8080,http://localhost:3000
 file:
-  upload-dir: /home/lucas-ribas-cardoso/Documentos/Projetos/upload-files-from-api-rest/
+  upload-dir: /uploads
 email:
   subject: "Default subject"
   message: "Default message"

@@ -6,6 +6,7 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonResponse
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonUpdateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.file.exporter.MediaTypes;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.service.PersonService;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -60,7 +61,7 @@ public class PersonController implements PersonControllerDocs {
       @RequestParam(value = "size", defaultValue = "10") Integer size,
       @RequestParam(value = "direction", defaultValue = "desc") String direction,
       @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
-      PagedResourcesAssembler<PersonResponseDto> assembler) {
+      @Parameter(hidden = true) PagedResourcesAssembler<PersonResponseDto> assembler) {
 
     Sort.Direction sortDirection =
         "desc".equalsIgnoreCase(direction) ? Sort.Direction.DESC : Sort.Direction.ASC;
@@ -85,7 +86,7 @@ public class PersonController implements PersonControllerDocs {
       @RequestParam(value = "size", defaultValue = "10") Integer size,
       @RequestParam(value = "direction", defaultValue = "desc") String direction,
       @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
-      PagedResourcesAssembler<PersonResponseDto> assembler) {
+      @Parameter(hidden = true) PagedResourcesAssembler<PersonResponseDto> assembler) {
 
     Sort.Direction sortDirection =
         "desc".equalsIgnoreCase(direction) ? Sort.Direction.DESC : Sort.Direction.ASC;

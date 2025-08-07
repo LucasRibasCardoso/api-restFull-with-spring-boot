@@ -2,6 +2,8 @@ server:
   port: 8888
 cors:
   originPatterns: http://localhost:8080,http://localhost:3000
+file:
+  upload-dir: ./target/uploads-test
 security:
   jwt:
     secret-key: xlAK8ReAUGUK2GDMlZwcKQ4uvLI2zUeHoM9S5R9rZHY=

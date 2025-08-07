@@ -5,6 +5,7 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookCreateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookResponseDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookUpdateDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -76,7 +77,7 @@ public interface BookControllerDocs {
       @RequestParam(value = "size", defaultValue = "10") Integer size,
       @RequestParam(value = "direction", defaultValue = "desc") String direction,
       @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
-      PagedResourcesAssembler<BookResponseDto> assembler);
+      @Parameter(hidden = true) PagedResourcesAssembler<BookResponseDto> assembler);
 
   @Operation(
       summary = "Delete a book",
