@@ -2,11 +2,8 @@ package com.LucasRibasCardoso.api_rest_with_spring_boot.integration.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import lombok.Getter;
-import lombok.Setter;
 
-@Setter
-@Getter
+
 public class BookResponseDto {
 
   private Long id;
@@ -23,6 +20,46 @@ public class BookResponseDto {
     this.title = title;
     this.author = author;
     this.launchDate = launchDate;
+    this.price = price;
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public String getAuthor() {
+    return author;
+  }
+
+  public void setAuthor(String author) {
+    this.author = author;
+  }
+
+  public LocalDate getLaunchDate() {
+    return launchDate;
+  }
+
+  public void setLaunchDate(LocalDate launchDate) {
+    this.launchDate = launchDate;
+  }
+
+  public BigDecimal getPrice() {
+    return price;
+  }
+
+  public void setPrice(BigDecimal price) {
     this.price = price;
   }
 }

@@ -1,11 +1,7 @@
 package com.LucasRibasCardoso.api_rest_with_spring_boot.integration.dto;
 
 import com.LucasRibasCardoso.api_rest_with_spring_boot.model.Gender;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class PersonResponseDto {
   private Long id;
   private String firstName;
@@ -23,6 +19,54 @@ public class PersonResponseDto {
     this.lastName = lastName;
     this.cpf = cpf;
     this.gender = gender;
+    this.enabled = enabled;
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
+
+  public String getCpf() {
+    return cpf;
+  }
+
+  public void setCpf(String cpf) {
+    this.cpf = cpf;
+  }
+
+  public Gender getGender() {
+    return gender;
+  }
+
+  public void setGender(Gender gender) {
+    this.gender = gender;
+  }
+
+  public Boolean getEnabled() {
+    return enabled;
+  }
+
+  public void setEnabled(Boolean enabled) {
     this.enabled = enabled;
   }
 }
