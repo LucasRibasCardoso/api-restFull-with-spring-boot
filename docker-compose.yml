@@ -19,9 +19,7 @@ services:
       - api-rest-network
 
   api-rest:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: lucasribascardoso/api-rest-springboot:6dca78e
     container_name: api-rest
     depends_on:
       postgres:
