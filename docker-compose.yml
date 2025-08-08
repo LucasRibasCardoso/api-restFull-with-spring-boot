@@ -45,9 +45,22 @@ services:
       - api-rest-network
     profiles:
       - "full"
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    restart: always
+    ports:
+      - 9000:9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - api-rest-network
+
 volumes:
   postgres_data:
   uploads_data:
+  portainer_data:
 
 networks:
   api-rest-network:
