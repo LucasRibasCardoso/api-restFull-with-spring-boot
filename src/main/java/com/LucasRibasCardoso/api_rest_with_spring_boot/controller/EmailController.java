@@ -3,6 +3,7 @@ package com.LucasRibasCardoso.api_rest_with_spring_boot.controller;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.docs.EmailControllerDocs;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.mail.EmailRequestDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.service.EmailService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("api/v1/email")
+@SecurityRequirement(name = "bearerAuth")
 public class EmailController implements EmailControllerDocs {
 
   private final EmailService emailService;

@@ -6,6 +6,7 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookResponseDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.book.BookUpdateDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.service.BookService;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import java.net.URI;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @RequestMapping("/api/v1/books")
+@SecurityRequirement(name = "bearerAuth")
 public class BookController implements BookControllerDocs {
 
   private final BookService bookService;

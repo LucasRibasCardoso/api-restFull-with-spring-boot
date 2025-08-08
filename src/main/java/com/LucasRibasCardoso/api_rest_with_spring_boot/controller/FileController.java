@@ -3,6 +3,7 @@ package com.LucasRibasCardoso.api_rest_with_spring_boot.controller;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.docs.FileControllerDocs;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.file.UploadFileResponseDto;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.service.FileStorageService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @RequestMapping("api/v1/files")
+@SecurityRequirement(name = "bearerAuth")
 public class FileController implements FileControllerDocs {
 
   private static final Logger logger = LoggerFactory.getLogger(FileController.class);

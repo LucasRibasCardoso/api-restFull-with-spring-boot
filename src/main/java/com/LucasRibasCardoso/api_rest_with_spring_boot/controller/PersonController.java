@@ -7,6 +7,7 @@ import com.LucasRibasCardoso.api_rest_with_spring_boot.dto.person.PersonUpdateDt
 import com.LucasRibasCardoso.api_rest_with_spring_boot.file.exporter.MediaTypes;
 import com.LucasRibasCardoso.api_rest_with_spring_boot.service.PersonService;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -28,6 +29,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @RequestMapping("/api/v1/person")
+@SecurityRequirement(name = "bearerAuth")
 public class PersonController implements PersonControllerDocs {
 
   private final PersonService service;

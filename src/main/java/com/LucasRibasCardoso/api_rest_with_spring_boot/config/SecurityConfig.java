@@ -99,9 +99,6 @@ public class SecurityConfig {
                         "/v3/api-docs/**",
                         "/actuator/health")
                     .permitAll()
-                    // Endpoint de criação de usuário apenas em DEV (usar @Profile)
-                    .requestMatchers("/auth/create-user")
-                    .hasRole("ADMIN")
                     // APIs protegidas
                     .requestMatchers("/api/v1/**")
                     .authenticated()
