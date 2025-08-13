@@ -23,6 +23,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: api-rest
+    image: lucasribascardoso/api-rest-erudio:latest
     depends_on:
       postgres:
         condition: service_healthy
