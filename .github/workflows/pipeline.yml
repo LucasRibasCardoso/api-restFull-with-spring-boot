@@ -29,7 +29,7 @@ jobs:
       # 4. Compila o código, roda os testes e empacota a aplicação em um .jar
       - name: Build with Maven
         env:
-          DB_HOST: localhost # Para os testes, o BD provavelmente rodará localmente no runner
+          DB_URL: ${{ secrets.DB_URL }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
@@ -53,7 +53,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.DOCKER_USERNAME }}/api-rest-springboot
+          images: ${{ secrets.DOCKER_USERNAME }}/api-rest-erudio
           tags: |
             type=sha,prefix=
 
